@@ -1,0 +1,10 @@
+email:
+  domain: cointler.com
+  server: mail.cointler.com
+binance:
+  url: https://api.binance.com/
+  intervals: 
+    minute: 1m
+    hour: 1h
+    day: 1d
+database_dir: db/
