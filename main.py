@@ -4,6 +4,7 @@ import time
 import sqlite3
 
 from modules.sql import SqlHelper
+from modules.twitter import Twitter
 from modules.klines import Klines
 from modules.email import Email
 
@@ -26,12 +27,14 @@ class Ceres:
             return
 
         self.sql_helper = SqlHelper(self.global_config, self.currency_config)
+        self.twitter = Twitter(self.global_config, self.currency_config, self.sql_helper)
         self.klines = Klines(self.global_config, self.currency_config, self.sql_helper)
         self.email = Email(self.global_config, self.currency_config, self.sql_helper)
 
     def tick(self):
+        self.twitter.run()
         # self.klines.run()
-        self.email.run()
+        # self.email.run()
     def stop(self):
         pass
 

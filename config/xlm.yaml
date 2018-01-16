@@ -4,3 +4,10 @@ email:
   domain: cointler.com
   username: xlm
   password: yb^28dJC?3bY
+twitter:
+  hashtags:
+    - xlm
+  timelines:
+    - StellarLumens
+    - StellarOrg
+    
