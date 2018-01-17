@@ -2,6 +2,8 @@ import sqlite3
 import numpy as np
 import logger
 import tweepy
+from textblob import TextBlob
+
 
 class Twitter:
     def __init__(self, global_config, currency_config, sql_helper):
@@ -19,23 +21,40 @@ class Twitter:
         self.api = tweepy.API(auth)
 
     def run(self):
-        for tweet in tweepy.Cursor(
-                self.api.user_timeline, 
-                screen_name=self.currency_config["twitter"]["timelines"][0]
-            ).items(10):
-            print tweet.text
+        tweets = np.array([])
+        for timeline in self.currency_config["twitter"]["timelines"]:
+            user_tweets = tweepy.Cursor(
+                    self.api.user_timeline, 
+                    screen_name=timeline)
+            tweets = np.append(tweets, list(user_tweets.items(10)))
 
-        for tweet in tweepy.Cursor(
-                self.api.search,
-                q=self.currency_config["twitter"]["hashtags"][0]
-            ).items(10):
-            print tweet.text
+        for hashtag in self.currency_config["twitter"]["hashtags"]:
+            hashtag_tweets = tweepy.Cursor(
+                    self.api.search,
+                    q=hashtag)
+            tweets = np.append(tweets, list(hashtag_tweets.items(10)))
 
         connection = self.sql_helper.get()
         c = connection.cursor()
         events = 0
-        
+        for tweet in tweets:
+            blob = TextBlob(tweet.text.encode('unicode_escape'))
+            print tweet.id
+            values = (
+                tweet.id, 
+                tweet.created_at,
+                blob.polarity, 
+                blob.subjectivity,
+                "twitter",
+                "")
+            try:
+                c.execute("INSERT INTO event VALUES (?, ?, ?, ?, ?, ?)", values)
+                events += 1
+            except sqlite3.IntegrityError:
+                continue
+
         c.close()
+        connection.commit()
         connection.close()
 
         self.log.info(str(events) + " events saved")
