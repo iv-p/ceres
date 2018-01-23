@@ -1,15 +1,17 @@
+#!/usr/bin/env python
+
 import yaml
 import sys
 import time
 import sqlite3
 
-from modules.sql import SqlHelper
-from modules.klines import Klines
-from modules.email import Email
+from klines import Klines
+from mail import Email
+from db import DB
 
 class Ceres:
     global_config_file = "global"
-    config_dir = "config/"
+    config_dir = "/config/"
     config_file_extention = ".yaml"
 
     def __init__(self, currency_code):
@@ -25,13 +27,13 @@ class Ceres:
             print("Error loading configuration files.")
             return
 
-        self.sql_helper = SqlHelper(self.global_config, self.currency_config)
-        self.klines = Klines(self.global_config, self.currency_config, self.sql_helper)
-        self.email = Email(self.global_config, self.currency_config, self.sql_helper)
+        self.db = DB(self.global_config, self.currency_config)
+        self.klines = Klines(self.global_config, self.currency_config, self.db)
+        self.email = Email(self.global_config, self.currency_config, self.db)
 
     def tick(self):
-        # self.klines.run()
-        self.email.run()
+        self.klines.run()
+        # self.email.run()
     def stop(self):
         pass
 

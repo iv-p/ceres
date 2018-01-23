@@ -8,3 +8,5 @@ binance:
     hour: 1h
     day: 1d
 database_dir: db/
+mongodb:
+  location: mongodb
