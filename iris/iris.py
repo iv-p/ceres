@@ -7,6 +7,7 @@ import sqlite3
 
 from klines import Klines
 from mail import Email
+from twitter import Twitter
 from db import DB
 
 class Ceres:
@@ -28,12 +29,14 @@ class Ceres:
             return
 
         self.db = DB(self.global_config, self.currency_config)
+        self.twitter = Twitter(self.global_config, self.currency_config, self.db)
         self.klines = Klines(self.global_config, self.currency_config, self.db)
         self.email = Email(self.global_config, self.currency_config, self.db)
 
     def tick(self):
+        self.twitter.run()
         self.klines.run()
-        # self.email.run()
+        self.email.run()
     def stop(self):
         pass
 

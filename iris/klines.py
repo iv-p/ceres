@@ -10,9 +10,6 @@ class Klines:
         self.db = db
 
     def run(self):
-        table = self.db.get().klines
-        asd = table.insert_one({"author": "Mike"}).inserted_id
-        
         entries = 0
         for key in self.global_config["binance"]["intervals"].keys():
             interval = self.global_config["binance"]["intervals"][key]

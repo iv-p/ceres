@@ -24,6 +24,7 @@ class Email:
     def run(self):
         resp, items, octets = self.email_connection.list()
         
+        events = 0
         for i in range(len(items)):
             id, size = string.split(items[i])
             resp, text, octets = self.email_connection.retr(id)
@@ -31,11 +32,6 @@ class Email:
             blob = TextBlob(text)
             file = StringIO.StringIO(text)
             message = rfc822.Message(file)
-            date = message.getdate("Date")
-            date[5] = 0
-            timestamps = {
-                "minute": time.mktime(date)
-            }
-            date[4] = 0
-            timestamps["hour"] = 0
-            print time.mktime(date)
+            timestamp = time.mktime(message.getdate("Date"))
+        
+        self.log.info(str(events) + " events written")        
