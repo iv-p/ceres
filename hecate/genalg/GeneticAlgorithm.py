@@ -12,14 +12,19 @@ class GeneticAlgorithm(object):
         self.params = params
         self.generations = np.array([]) # numpy is library for very fast data manipulation
         self.generation = np.array([])
+        self.best_fitness = float("inf")
 
-        # if os.path.isfile(params["backup_file"]):
-        #     print("Found existing backup file")
-        #     with open(params["backup_file"], 'rb') as pickled_file:
-        #         data = pickle.load(pickled_file)
-        #         self.params = params
-        #         self.generations = data["generations"]
-        #         self.generation = self.generations[-1]
+        if os.path.isfile(params["backup_file"]):
+            print("Found existing backup file")
+            with open(params["backup_file"], 'rb') as pickled_file:
+                data = pickle.load(pickled_file)
+                self.params = params
+                for individual_data in data["generation"]:
+                    individual = self.params["class"](self.params["individual_params"], individual_data)
+                    self.generation = np.append(self.generation, individual)
+                losses = [x.loss for x in self.generation]
+                self.best_fitness = np.min(losses)
+                print("best individual to date " + str(self.best_fitness))
         
         self.run()
 
@@ -35,7 +40,7 @@ class GeneticAlgorithm(object):
             print("Generation " + str(i))
             self.populate()
             self.evaluate()
-            # self.save_progress()
+            self.save_progress()
             self.drop()
             self.mutate()
             self.crossover()
@@ -52,9 +57,11 @@ class GeneticAlgorithm(object):
             and adds them to the history'''
         print("evaluating...")
         for individual in self.generation:
-            if individual.get_fitness() > 0:
+            if individual.get_fitness() != float("inf"):
                 continue
-            individual.evaluate()
+            fitness = individual.evaluate(self.best_fitness)
+            if fitness < self.best_fitness:
+                self.best_fitness = fitness
 
         self.generation = sorted(self.generation, key=lambda item: item.get_fitness())
         print("")
@@ -64,10 +71,10 @@ class GeneticAlgorithm(object):
     def save_progress(self):
         ''' Dumps the previous and current generations and the parameters in a file
             so we can resume at a later date '''
+        individual_layers = [x.export() for x in self.generation]
         data = {
             "params": self.params,
-            "generation": self.generation,
-            "generations": self.generations
+            "generation": individual_layers
         }
         with open(self.params["backup_file"], 'wb') as pickled_file:
             pickle.dump(data, pickled_file)

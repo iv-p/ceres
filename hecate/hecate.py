@@ -16,7 +16,7 @@ def main():
     ''' Program entry '''
     params = {
         "generations": 1000,
-        "population": 40, #individual = neural network
+        "population": 3, #individual = neural network
         "crossover": 0.2,
         "mutation": 0.2,
         "threshold": 0.99,
