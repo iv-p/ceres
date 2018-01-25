@@ -1,16 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import yaml
 import sys
 import time
 from klines import Klines
-# from mail import Email
-# from twitter import Twitter
 from db import DB
 
 class Ceres:
     global_config_file = "global"
-    config_dir = "../config/"
+    config_dir = "/config/"
     config_file_extention = ".yaml"
 
     def __init__(self, currency_code):
@@ -27,14 +25,10 @@ class Ceres:
             return
 
         self.db = DB(self.global_config, self.currency_config)
-        # self.twitter = Twitter(self.global_config, self.currency_config, self.db)
         self.klines = Klines(self.global_config, self.currency_config, self.db)
-        # self.email = Email(self.global_config, self.currency_config, self.db)
 
     def tick(self):
-        # self.twitter.run()
         self.klines.run()
-        # self.email.run()
     def stop(self):
         pass
 

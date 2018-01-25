@@ -1,21 +1,26 @@
 version: '3'
 services:
   iris:
-    image: iris:local
+    image: iris
     volumes:
-      - ./config:/config
+      - ./config:/config:ro
     links:
       - mongodb
     depends_on:
       - mongodb
+    environment:
+      - PYTHONUNBUFFERED=1
   hephaestus:
-    image: hephaestus:local
+    image: hephaestus
     volumes:
-      - ./config:/config
+      - ./config:/config:ro
+      - ./data/nn:/data:rw
     links:
       - mongodb
     depends_on:
       - mongodb
+    environment:
+      - PYTHONUNBUFFERED=1
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
@@ -25,7 +30,7 @@ services:
       - MONGODB_USER="user" 
       - MONGODB_PASS="pass"
     volumes:
-      - ./data/db:/data/db
+      - ./data/db:/data/db:rw
     ports:
         - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null # --quiet
