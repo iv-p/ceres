@@ -9,9 +9,11 @@ binance:
     day: 1d
 database_dir: db/
 mongodb:
-  location: mongodb
+  location: localhost
 twitter:
   consumer_key: 7nQ1evwDEcuI3x0OYItLhZO95
   consumer_secret: lboFeJtUxAwB9ySXwwkQm4G1jiFxZuOls6rApJKi22jeJZVDhR
   access_token_key: 953383048304824321-HEx0xWznySV0Ag1UDtEViSAlX5qyqXM
   access_token_secret: XqY68PTH7lCfvDsA73BB2X1Q2bwouoUmFTIfFZF0Dz1dG
+neural_network:
+  input: 200

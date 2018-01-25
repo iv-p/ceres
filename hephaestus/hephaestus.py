@@ -2,16 +2,19 @@
 import yaml
 import sys
 import time
-import sqlite3
+import pymongo
 import numpy as np
 
 from db import DB
 from caffe2.python import core, utils
 from caffe2.proto import caffe2_pb2
 
-class Hecate:
+def mapper(t):
+    return float(t["high"]) + float(t["low"]) / 2
+
+class Hephaestus:
     global_config_file = "global"
-    config_dir = "/config/"
+    config_dir = "../config/"
     config_file_extention = ".yaml"
 
     def __init__(self, currency_code):
@@ -36,17 +39,32 @@ class Hecate:
         pass
 
     def loadData(self):
-        data = np.array([])
-
         since_timestamp = 0
-        self.db.get().klines.find({"timestamp": { "$lt" : since_timestamp }}).sort("timestamp")
+        klines_data = np.array(list(self.db.get("klines").find({"timestamp": { "$gt" : since_timestamp }}).sort("timestamp")))
+
+        count = len(klines_data)
+        klines_data = np.array([mapper(x) for x in klines_data])
+
+        data = np.empty((0, self.global_config["neural_network"]["input"] + 3))
+
+        for i in range(0, count - self.global_config["neural_network"]["input"] - 1440):
+            input_data = klines_data[i:i + self.global_config["neural_network"]["input"]]
+
+            label_data = np.array([])
+            label_data = np.append(label_data, klines_data[i + self.global_config["neural_network"]["input"] + 1])
+            label_data = np.append(label_data, klines_data[i + self.global_config["neural_network"]["input"] + 60])
+            label_data = np.append(label_data, klines_data[i + self.global_config["neural_network"]["input"] + 1440])
+
+            result = np.append(input_data, label_data)
+            result = result / np.max(result)
+            data = np.vstack((data, result))
 
         train,val = np.split(data,[int(0.8*data.shape[0])])
-        self.write_db("minidb", "data/crowdflower/train.minidb", train[:,:1920], train[:,1920:])
-        self.write_db("minidb", "data/crowdflower/test.minidb", val[:,:1920], val[:,1920:])
+        self.write_db("minidb", "data/train.minidb", train[:,:200], train[:,200:])
+        self.write_db("minidb", "data/test.minidb", val[:,:200], val[:,200:])
 
     def write_db(self, db_type, db_name, features, labels):
-        labels = labels.reshape(labels.shape[0]).flatten().astype(int)
+        labels = labels.reshape(labels.shape[0]).flatten().astype(float)
         db = core.C.create_db(db_type, db_name, core.C.Mode.write)
         transaction = db.new_transaction()
         for i in range(features.shape[0]):
@@ -60,14 +78,13 @@ class Hecate:
         # Close the transaction, and then close the db.
         del transaction
         del db
-    
 
 if __name__ == "__main__":
-    hecate = Hecate(sys.argv[1])
+    hephaestus = Hephaestus(sys.argv[1])
     starttime=time.time()
     try:
         while True:
-            hecate.tick()
+            hephaestus.tick()
             time.sleep(60.0 - ((time.time() - starttime) % 60.0))
     except KeyboardInterrupt:
-        hecate.stop()
+        hephaestus.stop()

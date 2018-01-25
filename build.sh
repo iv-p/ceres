@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-
-
 PROFILE="${1}"
 TARGET="target"
 CONFIG="${TARGET}/config/"
 
 #  BUILD MODULES
 docker build -t iris:${PROFILE} iris/
+docker build -t hephaestus:${PROFILE} hephaestus/
 
 # rm -rf "${TARGET}" 
 mkdir -p "${CONFIG}"

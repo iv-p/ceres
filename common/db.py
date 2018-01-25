@@ -1,9 +1,9 @@
 from pymongo import MongoClient
 import logger
 
-
 class DB:
     def __init__(self, global_config, currency_config):
+        print "initialising db"
         self.log = logger.get("db")
         self.global_config = global_config
         self.currency_config = currency_config

@@ -8,6 +8,14 @@ services:
       - mongodb
     depends_on:
       - mongodb
+  hephaestus:
+    image: hephaestus:local
+    volumes:
+      - ./config:/config
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
   mongodb:
     image: mongo:latest
     container_name: "mongodb"

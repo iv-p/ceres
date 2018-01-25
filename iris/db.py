@@ -13,5 +13,5 @@ class DB:
         except pymongo.errors.ConnectionFailure:
             print("Could not connect to mongodb")
 
-    def get(self):
-        return self.client[self.currency_config["name"]]
+    def get(self, collection):
+        return self.client[self.currency_config["name"]][collection]
