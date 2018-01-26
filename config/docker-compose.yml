@@ -21,6 +21,12 @@ services:
       - mongodb
     environment:
       - PYTHONUNBUFFERED=1
+  janus:
+    image: janus
+    volumes:
+      - ./config:/config:ro
+    environment:
+      - PYTHONUNBUFFERED=1
   mongodb:
     image: mongo:latest
     container_name: "mongodb"

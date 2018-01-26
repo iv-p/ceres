@@ -1,5 +1,5 @@
-FROM jfloff/alpine-python:2.7-slim
-RUN apk add --update --no-cache g++ gcc libxslt-dev python-dev \
-    && pip --no-cache-dir install 
-ADD *.py /opt/iris/
-CMD ["./opt/iris/iris.py", "xlm"]
+FROM alpine:3.7
+RUN apk add --update --no-cache g++ gcc python3-dev \
+    && pip --no-cache-dir install numpy
+ADD *.py /opt/hecate/
+CMD ["./opt/hecate/hecate.py"]

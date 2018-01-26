@@ -1,1 +1,0 @@
-export PYTHONPATH=/home/penchev/workspace/ceres/common:/usr/local:$PYTHONPATH 

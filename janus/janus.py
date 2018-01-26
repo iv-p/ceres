@@ -1,42 +1,37 @@
-#!/usr/bin/env python3
 import yaml
 import sys
 import time
-from klines import Klines
-from db import DB
+from network import Network
 
-class Iris:
+class Janus:
     global_config_file = "global"
     config_dir = "/config/"
     config_file_extention = ".yaml"
 
-    def __init__(self, currency_code):
-        self.currency_config = None
+    def __init__(self):
         self.global_config = None
         try:
             with open(self.config_dir + self.global_config_file + self.config_file_extention) as fp:
                 self.global_config = yaml.load(fp)
 
-            with open(self.config_dir + currency_code + self.config_file_extention) as fp:
-                self.currency_config = yaml.load(fp)
         except IOError:
             print("Error loading configuration files.")
             return
 
-        self.db = DB(self.global_config, self.currency_config)
-        self.klines = Klines(self.global_config, self.currency_config, self.db)
+        self.network = Network(self.global_config)
 
     def tick(self):
-        self.klines.run()
+        self.network.predict()
+
     def stop(self):
         pass
 
 if __name__ == "__main__":
-    iris = Iris(sys.argv[1])
+    janus = Janus()
     starttime=time.time()
     try:
         while True:
-            iris.tick()
+            janus.tick()
             time.sleep(60.0 - ((time.time() - starttime) % 60.0))
     except KeyboardInterrupt:
-        ceres.stop()
+        janus.stop()

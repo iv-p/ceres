@@ -50,7 +50,7 @@ class Hephaestus:
             result = result / np.max(result[:self.global_config["neural_network"]["input"]])
             data = np.vstack((data, result))
 
-        np.save(self.global_config["neural_network"]["file"], data)
+        np.save(self.global_config["neural_network"]["training_file"], data)
         print("data saved")
 
     def stop(self):

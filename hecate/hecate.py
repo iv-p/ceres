@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-from genalg.GeneticAlgorithm import GeneticAlgorithm
-from neunet.NetworkIndividual import NetworkIndividual
+from genalg import GeneticAlgorithm
+from network import Network
 
 import numpy as np
 import math
+import yaml
 
 def load_data():
     data = np.load("../target/data/nn/training_data.npy")
@@ -12,8 +13,10 @@ def load_data():
     Y_train = np.asarray(data[:,5:7], dtype=np.float64)
     return X_train, Y_train, X_train, Y_train
 
-def main():
-    ''' Program entry '''
+class Hecate:
+    global_config_file = "global"
+    config_dir = "../config/"
+    config_file_extention = ".yaml"
     params = {
         "generations": 1000,
         "population": 3, #individual = neural network
@@ -21,7 +24,7 @@ def main():
         "mutation": 0.2,
         "threshold": 0.99,
         "backup_file": "./run.bac",
-        "class": NetworkIndividual,
+        "class": Network,
         "individual_params": {
             "input_size": 5,
             "output_size": 2,
@@ -40,7 +43,20 @@ def main():
         }
     }
 
-    ga = GeneticAlgorithm(params)
+    def __init__(self):
+        self.global_config = None
+        try:
+            with open(self.config_dir + self.global_config_file + self.config_file_extention) as fp:
+                self.global_config = yaml.load(fp)
 
-if __name__ == '__main__':
-    main()
+        except IOError:
+            print("Error loading configuration files.")
+            return
+
+    def start(self):
+        self.params["individual_params"]["config"] = self.global_config
+        ga = GeneticAlgorithm(self.params)
+
+if __name__ == "__main__":
+    hecate = Hecate()
+    hecate.start()

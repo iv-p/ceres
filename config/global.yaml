@@ -15,4 +15,12 @@ twitter:
   access_token_secret: XqY68PTH7lCfvDsA73BB2X1Q2bwouoUmFTIfFZF0Dz1dG
 neural_network:
   input: 5
-  file: /data/training_data
+  training_file: /data/training_data
+  model_file: model.ckpt
+digital_ocean:
+  access_key: 6WUWESP2FU23T6KIP23V
+  access_secret: mstF9pNXcEp+fpk4KcioeUPyeyIHUMxUndYN7JllOm4
+  endpoint: https://ams3.digitaloceanspaces.com
+  region: ams3
+  space: whitewave
+  model_file: model.zip
