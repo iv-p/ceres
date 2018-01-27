@@ -18,6 +18,7 @@ class Manager:
         self.global_config = global_config
         self.currency_config = currency_config
         self.db = db
+        self.wallet = 2.0
 
         app = Flask(__name__)
 
@@ -31,7 +32,11 @@ class Manager:
 
         @app.route("/worth")
         def worth():
-            return self.worth()
+            return self.get_worth()
+
+        @app.route("/stocks")
+        def stocks():
+            return self.get_stocks()
 
         app.run(host='0.0.0.0')
 
@@ -43,6 +48,11 @@ class Manager:
         r = requests.get(self.global_config["url"]["data-distributor"] + "/" + currency + "/price")
         price = float(r.text)
         quantity = math.floor(self.eth_per_stock / price)
+
+        if self.wallet < price * quantity:
+            return "not enough funds"
+        
+        self.wallet -= price * quantity
         stock = self.buy_stock(currency, quantity, price)
         self.db.get("manager", "stocks").insert_one(stock)
 
@@ -56,19 +66,34 @@ class Manager:
                 result = self.db.get("manager", "stocks").delete_one(stock)
                 r = requests.get(self.global_config["url"]["data-distributor"] + "/" + currency + "/price")
                 price = float(r.text)
+                self.wallet += price * stock["quantity"]
                 self.sell_stock(stock, price)
                 self.db.get("manager", "stocks").insert_one(stock)
                 sold += result.deleted_count
         return str(sold)
 
-    def worth(self):
+    def get_worth(self):
         stocks = self.db.get("manager", "stocks").find({"sell": None})
         worth = 0
         for stock in stocks:
             r = requests.get(self.global_config["url"]["data-distributor"] + "/" + stock["symbol"] + "/price")
             price = float(r.text)
             worth += price * stock["quantity"]
-        return str(worth)
+        return str(worth + self.wallet)
+
+    def get_stocks(self):
+        stocks = self.db.get("manager", "stocks").find({"sell": None})
+        stocks_list = []
+        for stock in stocks:
+            s = {
+                "symbol": stock["symbol"],
+                "quantity": stock["quantity"],
+                "buy_price": stock["buy"]["price"]
+            }
+            stocks_list.append(s)
+        print(stocks_list)
+        return json.dumps(stocks_list)
+
 
     def sell_stock(self, stock, price):
         stock["sell"] = {
