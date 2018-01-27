@@ -1,4 +1,0 @@
-FROM gcr.io/tensorflow/tensorflow:1.5.0-rc1-py3
-RUN pip3 --no-cache-dir install pyyaml boto3
-ADD *.py /opt/janus/
-CMD ["python3", "/opt/janus/janus.py"]

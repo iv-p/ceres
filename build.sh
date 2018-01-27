@@ -3,9 +3,11 @@ TARGET="target"
 CONFIG="${TARGET}/config/"
 
 #  BUILD MODULES
-docker build -t iris iris/
-docker build -t janus janus/
-docker build -t hephaestus hephaestus/
+docker build -t data-fetcher data-fetcher/
+docker build -t data-distributor data-distributor/
+docker build -t decision-maker decision-maker/
+docker build -t price-predictor price-predictor/
+docker build -t stock-manager stock-manager/
 
 # rm -rf "${TARGET}" 
 mkdir -p "${CONFIG}"

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from genalg import GeneticAlgorithm
 from network import Network
 
@@ -13,13 +12,13 @@ def load_data():
     Y_train = np.asarray(data[:,5:7], dtype=np.float64)
     return X_train, Y_train, X_train, Y_train
 
-class Hecate:
+class NetworkTrainer:
     global_config_file = "global"
     config_dir = "../config/"
     config_file_extention = ".yaml"
     params = {
         "generations": 1000,
-        "population": 3, #individual = neural network
+        "population": 3,
         "crossover": 0.2,
         "mutation": 0.2,
         "threshold": 0.99,
@@ -58,5 +57,5 @@ class Hecate:
         ga = GeneticAlgorithm(self.params)
 
 if __name__ == "__main__":
-    hecate = Hecate()
-    hecate.start()
+    network_trainer = NetworkTrainer()
+    network_trainer.start()

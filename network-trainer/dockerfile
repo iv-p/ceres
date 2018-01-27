@@ -1,5 +1,5 @@
 FROM alpine:3.7
 RUN apk add --update --no-cache g++ gcc python3-dev \
     && pip --no-cache-dir install numpy
-ADD *.py /opt/hecate/
-CMD ["./opt/hecate/hecate.py"]
+ADD . /opt/
+CMD ["./opt/main.py"]

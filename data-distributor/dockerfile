@@ -1,5 +1,7 @@
 FROM alpine:3.7
 RUN apk add --update --no-cache g++ gcc python3-dev \
     && pip3 --no-cache-dir install pyyaml numpy pymongo
-ADD *.py /opt/hephaestus/
-CMD ["./opt/hephaestus/hephaestus.py", "xlm"]
+RUN pip3 --no-cache-dir install flask
+ADD . /opt/
+EXPOSE 5000
+CMD ["python3", "./opt/main.py"]

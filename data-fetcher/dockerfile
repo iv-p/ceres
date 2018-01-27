@@ -1,5 +1,5 @@
 FROM alpine:3.7
 RUN apk add --update --no-cache g++ gcc libxslt-dev python3-dev \
     && pip3 --no-cache-dir install pyyaml lxml numpy textblob tweepy requests pymongo
-ADD *.py /opt/iris/
-CMD ["./opt/iris/iris.py", "xlm"]
+ADD . /opt/
+CMD ["python3", "./opt/main.py"]

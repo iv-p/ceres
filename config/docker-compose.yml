@@ -1,7 +1,7 @@
 version: '3'
 services:
-  iris:
-    image: iris
+  data-fetcher:
+    image: data-fetcher
     volumes:
       - ./config:/config:ro
     links:
@@ -10,8 +10,8 @@ services:
       - mongodb
     environment:
       - PYTHONUNBUFFERED=1
-  hephaestus:
-    image: hephaestus
+  data-distributor:
+    image: data-distributor
     volumes:
       - ./config:/config:ro
       - ./data/nn:/data:rw
@@ -21,12 +21,30 @@ services:
       - mongodb
     environment:
       - PYTHONUNBUFFERED=1
-  janus:
-    image: janus
+    ports:
+      - 8080:5000
+  price-predictor:
+    image: price-predictor
+    volumes:
+      - ./config:/config:ro
+    depends_on:
+      - data-distributor
+    environment:
+      - PYTHONUNBUFFERED=1
+  decision-maker:
+    image: decision-maker
     volumes:
       - ./config:/config:ro
     environment:
       - PYTHONUNBUFFERED=1
+  stock-manager:
+    image: stock-manager
+    volumes:
+      - ./config:/config:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - 8081:5000
   mongodb:
     image: mongo:latest
     container_name: "mongodb"

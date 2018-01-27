@@ -18,13 +18,12 @@ class Klines:
         self.db = db
 
     def run(self):
-        entries = 0
-        for key in self.global_config["binance"]["intervals"].keys():
-            interval = self.global_config["binance"]["intervals"][key]
-            latest_kline = self.db.get("klines").find().sort("timestamp", pymongo.DESCENDING).limit(1)
+        for currency_code in self.currency_config.keys():
+            entries = 0
+            latest_kline = self.db.get(currency_code, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(1)
             payload = {
-                "symbol": self.currency_config["symbol"],
-                "interval": interval
+                "symbol": self.currency_config[currency_code]["symbol"],
+                "interval": self.global_config["binance"]["interval"]
             }
 
             if latest_kline.count() > 0:
@@ -33,7 +32,7 @@ class Klines:
             r = requests.get(self.global_config["binance"]["url"] + "api/v1/klines", payload)
             data = [mapper(x) for x in r.json()]
             if len(data) > 0:
-                self.db.get("klines").insert_many(data)
+                self.db.get(currency_code, "klines").insert_many(data)
                 entries += len(data)
 
-        print(str(entries) + " klines saved")
+            print(currency_code + " : " + str(entries) + " klines saved")
