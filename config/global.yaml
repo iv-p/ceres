@@ -14,23 +14,28 @@ twitter:
   access_token_secret: XqY68PTH7lCfvDsA73BB2X1Q2bwouoUmFTIfFZF0Dz1dG
 neural_network:
   input: 5
-  training_file: /data/training_data
+  output: 2
+  training_file: /data/training_data.npy
   model_file: model.ckpt
-digital_ocean:
-  access_key: 6WUWESP2FU23T6KIP23V
-  access_secret: mstF9pNXcEp+fpk4KcioeUPyeyIHUMxUndYN7JllOm4
-  endpoint: https://ams3.digitaloceanspaces.com
-  region: ams3
-  space: whitewave
+vm:
+  hostname: 159.65.24.75
+  username: root
   model_file: model.zip
 url:
   data-distributor: http://data-distributor:5000
   stock-manager: http://stock-manager:5000
+  data-fetcher: http://data-fetcher:5000
+  decision-maker: http://decision-maker:5000
+  price-predictor: http://price-predictor:5000
+  stock-manager: http://stock-manager:5000
 data-fetcher:
-  interval: 30
+  klines: 30
 data-distributor:
-  interval: 30
+  interval: 600
 price-predictor:
   interval: 30
 decision-maker:
   interval: 30
+  thresholds: 
+    buy: 1.1
+    sell: 0.9

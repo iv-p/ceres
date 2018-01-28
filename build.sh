@@ -8,6 +8,7 @@ docker build -t data-distributor data-distributor/
 docker build -t decision-maker decision-maker/
 docker build -t price-predictor price-predictor/
 docker build -t stock-manager stock-manager/
+docker build -t manager manager/
 
 # rm -rf "${TARGET}" 
 mkdir -p "${CONFIG}"

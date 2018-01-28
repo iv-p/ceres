@@ -1,5 +1,6 @@
 FROM alpine:3.7
 RUN apk add --update --no-cache g++ gcc libxslt-dev python3-dev \
-    && pip3 --no-cache-dir install pyyaml lxml numpy textblob tweepy requests pymongo
+    && pip3 --no-cache-dir install pyyaml lxml numpy textblob tweepy requests pymongo flask
 ADD . /opt/
-CMD ["python3", "./opt/main.py"]
+EXPOSE 5000
+CMD ["python3", "/opt/main.py"]

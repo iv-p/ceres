@@ -22,21 +22,14 @@ class Manager:
 
         app = Flask(__name__)
 
-        @app.route("/buy/<currency>")
-        def buy(currency):
-            return self.buy(currency)
+        app.add_url_rule("/buy/<currency>", "buy", self.buy)
+        app.add_url_rule("/sell/<currency>", "sell", self.sell)
+        app.add_url_rule("/worth", "worth", self.get_worth)
+        app.add_url_rule("/stocks", "stocks", self.get_stocks)
 
-        @app.route("/sell/<currency>")
-        def sell(currency):
-            return self.sell(currency)
-
-        @app.route("/worth")
-        def worth():
-            return self.get_worth()
-
-        @app.route("/stocks")
-        def stocks():
-            return self.get_stocks()
+        @app.route("/healthcheck")
+        def healthcheck():
+            return "OK"
 
         app.run(host='0.0.0.0')
 
@@ -93,7 +86,6 @@ class Manager:
             stocks_list.append(s)
         print(stocks_list)
         return json.dumps(stocks_list)
-
 
     def sell_stock(self, stock, price):
         stock["sell"] = {

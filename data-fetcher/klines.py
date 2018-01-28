@@ -1,6 +1,9 @@
 import requests
 import numpy as np
 import pymongo
+import time
+import threading
+import time
 
 def mapper(t):
     return {
@@ -17,12 +20,16 @@ class Klines:
         self.currency_config = currency_config
         self.db = db
 
-    def run(self):
-        for currency_code in self.currency_config.keys():
+        self.thread = threading.Thread(target=self.run, args=())
+        self.thread.daemon = True
+        self.thread.start()
+
+    def tick(self):
+        for currency in self.currency_config.keys():
             entries = 0
-            latest_kline = self.db.get(currency_code, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(1)
+            latest_kline = self.db.get(currency, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(1)
             payload = {
-                "symbol": self.currency_config[currency_code]["symbol"],
+                "symbol": self.currency_config[currency]["symbol"],
                 "interval": self.global_config["binance"]["interval"]
             }
 
@@ -32,7 +39,19 @@ class Klines:
             r = requests.get(self.global_config["binance"]["url"] + "api/v1/klines", payload)
             data = [mapper(x) for x in r.json()]
             if len(data) > 0:
-                self.db.get(currency_code, "klines").insert_many(data)
+                self.db.get(currency, "klines").insert_many(data)
                 entries += len(data)
+            print("saved " + str(entries) + " klines for " + currency)
 
-            print(currency_code + " : " + str(entries) + " klines saved")
+    def run(self):
+        starttime=time.time()
+        interval = self.global_config["data-fetcher"]["klines"]
+        while True:
+            try:
+                self.tick()
+                time.sleep(interval - ((time.time() - starttime) % interval))
+            except Exception:
+                pass
+
+    def healthcheck(self):
+        return self.thread.is_alive()

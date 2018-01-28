@@ -10,6 +10,8 @@ services:
       - mongodb
     environment:
       - PYTHONUNBUFFERED=1
+    ports:
+      - 8081:5000
   data-distributor:
     image: data-distributor
     volumes:
@@ -22,21 +24,26 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     ports:
-      - 8080:5000
+      - 8082:5000
   price-predictor:
     image: price-predictor
     volumes:
       - ./config:/config:ro
+      - ./data:/data:rw
     depends_on:
       - data-distributor
     environment:
       - PYTHONUNBUFFERED=1
+    ports:
+      - 8083:5000
   decision-maker:
     image: decision-maker
     volumes:
       - ./config:/config:ro
     environment:
       - PYTHONUNBUFFERED=1
+    ports:
+      - 8084:5000
   stock-manager:
     image: stock-manager
     volumes:
@@ -44,7 +51,15 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     ports:
-      - 8081:5000
+      - 8085:5000
+  manager:
+    image: manager
+    volumes:
+      - ./config:/config:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - 8080:5000
   mongodb:
     image: mongo:latest
     container_name: "mongodb"

@@ -8,10 +8,8 @@ def mapper(t):
     return float(t["high"]) + float(t["low"]) / 2
 
 class Provider:
-    def __init__(self, global_config, db):
+    def __init__(self, global_config, db, app):
         self.db = db
-        app = Flask(__name__)
-
         @app.route("/<code>/prediction_data")
         def prediction_data(code):
             return self.prediction_data(code)
@@ -20,7 +18,9 @@ class Provider:
         def price(code):
             return self.get_price(code)
 
-        app.run(host='0.0.0.0')
+        @app.route("/<code>/klines")
+        def klines(code):
+            return self.get_klines(code)
 
     def prediction_data(self, code):
         since_timestamp = 0
@@ -32,3 +32,7 @@ class Provider:
     def get_price(self, code):
         klines_data = list(self.db.get(code, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(1))
         return str(mapper(klines_data[0]))
+
+    def get_klines(self, code):
+        klines_data = list(self.db.get(code, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(500))
+        return json.dumps(klines_data)

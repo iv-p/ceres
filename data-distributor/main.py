@@ -1,48 +1,33 @@
 import yaml
-import time
 import numpy as np
+import sys
+from flask import Flask
 from db import DB
 from tempfile import TemporaryFile
 
 from aggregator import Aggregator
 from provider import Provider
+from api import Api
 
-class DataDistributor:
-    global_config_file = "global.yaml"
-    currency_config_file = "currencies.yaml"
-    config_dir = "/config/"
-    config_file_extention = ".yaml"
+global_config_file = "global.yaml"
+currency_config_file = "currencies.yaml"
+config_dir = "/config/"
 
-    def __init__(self):
-        self.currency_config = None
-        self.global_config = None
-        try:
-            with open(self.config_dir + self.global_config_file) as fp:
-                self.global_config = yaml.load(fp)
+currency_config = None
+global_config = None
+try:
+    with open(config_dir + global_config_file) as fp:
+        global_config = yaml.load(fp)
 
-            with open(self.config_dir + self.currency_config_file) as fp:
-                self.currency_config = yaml.load(fp)
-        except IOError:
-            print("Error loading configuration files.")
-            return
+    with open(config_dir + currency_config_file) as fp:
+        currency_config = yaml.load(fp)
+except IOError:
+    print("Error loading configuration files.")
+    sys.exit(1)
 
-        self.db = DB(self.global_config)
-        self.aggregator = Aggregator(self.global_config, self.currency_config, self.db)
-        self.provider = Provider(self.global_config, self.db)
-
-    def tick(self):
-        self.aggregator.tick()
-
-    def run(self):
-        starttime=time.time()
-        interval = self.global_config["data-distributor"]["interval"]
-        try:
-            while True:
-                self.tick()
-                time.sleep(interval - ((time.time() - starttime) % interval))
-        except KeyboardInterrupt:
-            pass
-
-if __name__ == "__main__":
-    data_distributor = DataDistributor()
-    data_distributor.run()
+app = Flask(__name__)
+db = DB(global_config)
+aggregator = Aggregator(global_config, currency_config, db)
+provider = Provider(global_config, db, app)
+api = Api(app, aggregator)
+app.run("0.0.0.0")

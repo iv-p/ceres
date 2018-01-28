@@ -5,8 +5,11 @@ import random
 import os
 import zipfile
 import tensorflow as tf
-import boto3
 import pickle
+
+from paramiko import SSHClient
+from scp import SCPClient
+
 
 def zipdir(path, ziph):
     # ziph is zipfile handle
@@ -136,18 +139,12 @@ class Network():
         zipdir(self.local_model_dir, zipf)
         zipf.close()
 
-        session = boto3.session.Session()
-        client = session.client('s3',
-                                region_name=self.config["digital_ocean"]["region"],
-                                endpoint_url=self.config["digital_ocean"]["endpoint"],
-                                aws_access_key_id=self.config["digital_ocean"]["access_key"],
-                                aws_secret_access_key=self.config["digital_ocean"]["access_secret"])
+        ssh = SSHClient()
+        ssh.load_system_host_keys()
+        ssh.connect(hostname=self.config["vm"]["hostname"], username=self.config["vm"]["username"])
 
-        client.upload_file(
-                    self.config["digital_ocean"]["model_file"], 
-                    self.config["digital_ocean"]["space"], 
-                    self.local_model_file)
-        
+        with SCPClient(ssh.get_transport()) as scp:
+            scp.put(self.local_model_file, "/data/model.zip")
 
     def export(self):
         return {
