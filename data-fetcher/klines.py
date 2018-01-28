@@ -28,6 +28,9 @@ class Klines:
         for currency in self.currency_config.keys():
             entries = 0
             latest_kline = self.db.get(currency, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(1)
+            self.db.get(currency, "klines").create_index(
+                [("timestamp", pymongo.DESCENDING)],
+                unique=True)
             payload = {
                 "symbol": self.currency_config[currency]["symbol"],
                 "interval": self.global_config["binance"]["interval"]

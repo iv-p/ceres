@@ -31,9 +31,11 @@ class Checker:
                 verb = None
                 response = None
                 if predicted > self.buy_threshold:
+                    print("buy")
                     response = requests.get(self.global_config["url"]["stock-manager"] + "/buy/" + currency)
                     verb = "buy"
                 elif predicted < self.sell_threshold:
+                    print("sell")
                     response = requests.get(self.global_config["url"]["stock-manager"] + "/sell/" + currency)
                     verb = "sell"
 

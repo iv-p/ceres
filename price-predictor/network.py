@@ -10,6 +10,7 @@ import requests
 import json
 import datetime
 import time
+import threading
 
 def roundTime(dt=None, roundTo=60):
    if dt == None : dt = datetime.datetime.now()
@@ -18,7 +19,7 @@ def roundTime(dt=None, roundTo=60):
    return dt + datetime.timedelta(0,rounding-seconds,-dt.microsecond)
 
 class Network():
-    local_model_file = "./data/model.zip"
+    local_model_file = "/data/model.zip"
     local_model_dir = "./data/model/"
 
     def __init__(self, global_config, currency_config, db):
@@ -76,7 +77,7 @@ class Network():
         zipf = zipfile.ZipFile(self.local_model_file, 'r')
         zipf.extractall(".")
         zipf.close()
-        self.params = pickle.load(open(self.local_model_dir + "params", "rb"))
+        self.params = pickle.load(open("./model/params", "rb"))
 
         self.define_model()
 

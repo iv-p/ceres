@@ -6,7 +6,7 @@ binance:
   interval: 1m
 database_dir: db/
 mongodb:
-  location: mongodb
+  location: 46.101.17.4
 twitter:
   consumer_key: 7nQ1evwDEcuI3x0OYItLhZO95
   consumer_secret: lboFeJtUxAwB9ySXwwkQm4G1jiFxZuOls6rApJKi22jeJZVDhR
@@ -37,5 +37,5 @@ price-predictor:
 decision-maker:
   interval: 30
   thresholds: 
-    buy: 1.1
-    sell: 0.9
+    buy: 1.01
+    sell: 0.99

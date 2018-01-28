@@ -18,7 +18,7 @@ class NetworkTrainer:
     config_file_extention = ".yaml"
     params = {
         "generations": 1000,
-        "population": 3,
+        "population": 20,
         "crossover": 0.2,
         "mutation": 0.2,
         "threshold": 0.99,
@@ -29,9 +29,9 @@ class NetworkTrainer:
             "output_size": 2,
             "categories": 13,
             "min_layers": 1,
-            "max_layers": 3,
+            "max_layers": 10,
             "min_neurons": 20,
-            "max_neurons": 200,
+            "max_neurons": 2000,
             "min_dropout": 0,
             "max_dropout": 0.5,
             "batch_size": 10,

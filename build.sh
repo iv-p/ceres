@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 TARGET="target"
 CONFIG="${TARGET}/config/"
+PROFILE="${1}"
 
 #  BUILD MODULES
 docker build -t data-fetcher data-fetcher/
@@ -16,4 +17,10 @@ cp -r "./config/." "${CONFIG}"
 mv "${CONFIG}/docker-compose.yml" "${TARGET}" 
 
 pushd "$TARGET"
-docker-compose up
+docker-compose down
+if [ ! -z "${PROFILE}" ] 
+then
+    docker-compose up -d
+else
+    docker-compose up
+fi

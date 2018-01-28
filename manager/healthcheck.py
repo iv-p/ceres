@@ -7,6 +7,11 @@ class Healthcheck:
         def healthcheck():
             services = {}
             for service, url in global_config["url"].items():
-                response = requests.get(url + "/healthcheck")
-                services[service] = response.text
+                txt = "down"
+                try:
+                    response = requests.get(url + "/healthcheck")
+                    txt = response.text
+                except:
+                    pass
+                services[service] = txt
             return json.dumps(services)

@@ -21,7 +21,7 @@ class Network():
     local_model_file = "model.zip"
     local_model_dir = "./model/"
 
-    def __init__(self, params, import_data=None):
+    def __init__(self, params, import_data=None, layers=[]):
         self.params = params
         self.config = params["config"]
         if import_data != None:
@@ -29,7 +29,10 @@ class Network():
             self.name = import_data["name"]
             self.loss = import_data["loss"]
         else:
-            self.layers = self.generate_layers()
+            if len(layers) == 0:
+                self.layers = self.generate_layers()
+            else:
+                self.layers = layers
             self.name = str(uuid.uuid4())
             self.loss = float("inf")
 
@@ -43,9 +46,9 @@ class Network():
         for layer in layers:
             if "object" in layer.keys():
                 del layer["object"]
-        return NetworkIndividual(
+        return Network(
             self.params,
-            layers)
+            layers=layers)
 
     def mutate(self):
         layer = random.randint(0, len(self.layers) - 1)
@@ -79,6 +82,7 @@ class Network():
                 self.save_model(sess)
 
             print (".")
+            sess.close()
 
         return self.loss
 
@@ -91,8 +95,7 @@ class Network():
         for _ in range(0, num_layers):
             layers = np.append(layers, {
                 "neurons" : random.randint(self.params["min_neurons"], self.params["max_neurons"]),
-                "dropout" : random.uniform(self.params["min_dropout"], self.params["max_dropout"]),
-                "name": str(uuid.uuid4())
+                "dropout" : random.uniform(self.params["min_dropout"], self.params["max_dropout"])
             })
         return layers
 
@@ -106,12 +109,12 @@ class Network():
                                     inputs=layer_objects[-1], 
                                     units=layer["neurons"], 
                                     activation=tf.nn.relu,
-                                    name=layer["name"] + "-dense")
+                                    name=str(uuid.uuid4()) + "-dense")
             dropout = tf.layers.dropout(
                                     inputs=dense, 
                                     rate=layer["dropout"],
                                     training=True,
-                                    name=layer["name"] + "-dropout")
+                                    name=str(uuid.uuid4()) + "-dropout")
             layer_objects = np.append(layer_objects, dropout)
 
         out = tf.layers.dense(inputs=layer_objects[-1], units=self.params["output_size"], activation=tf.nn.relu)
@@ -135,16 +138,16 @@ class Network():
         
         pickle.dump(params, open(self.local_model_dir + "params", "wb"))
 
-        zipf = zipfile.ZipFile(self.local_model_file, 'w', zipfile.ZIP_DEFLATED)
+        zipf = zipfile.ZipFile("../target/data/" + self.local_model_file, 'w', zipfile.ZIP_DEFLATED)
         zipdir(self.local_model_dir, zipf)
         zipf.close()
 
-        ssh = SSHClient()
-        ssh.load_system_host_keys()
-        ssh.connect(hostname=self.config["vm"]["hostname"], username=self.config["vm"]["username"])
+        # ssh = SSHClient()
+        # ssh.load_system_host_keys()
+        # ssh.connect(hostname=self.config["vm"]["hostname"], username=self.config["vm"]["username"])
 
-        with SCPClient(ssh.get_transport()) as scp:
-            scp.put(self.local_model_file, "/data/model.zip")
+        # with SCPClient(ssh.get_transport()) as scp:
+        #     scp.put(self.local_model_file, "/data/model.zip")
 
     def export(self):
         return {

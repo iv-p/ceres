@@ -4,10 +4,6 @@ services:
     image: data-fetcher
     volumes:
       - ./config:/config:ro
-    links:
-      - mongodb
-    depends_on:
-      - mongodb
     environment:
       - PYTHONUNBUFFERED=1
     ports:
@@ -17,10 +13,6 @@ services:
     volumes:
       - ./config:/config:ro
       - ./data/nn:/data:rw
-    links:
-      - mongodb
-    depends_on:
-      - mongodb
     environment:
       - PYTHONUNBUFFERED=1
     ports:
@@ -60,16 +52,3 @@ services:
       - PYTHONUNBUFFERED=1
     ports:
       - 8080:5000
-  mongodb:
-    image: mongo:latest
-    container_name: "mongodb"
-    environment:
-      - MONGO_DATA_DIR=./db
-      - MONGO_LOG_DIR=/dev/null
-      - MONGODB_USER="user" 
-      - MONGODB_PASS="pass"
-    volumes:
-      - ./data/db:/data/db:rw
-    ports:
-        - 27017:27017
-    command: mongod --smallfiles --logpath=/dev/null # --quiet
