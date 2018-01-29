@@ -3,8 +3,6 @@ import numpy as np
 import os
 import zipfile
 import tensorflow as tf
-import boto3
-import botocore
 import pickle
 import requests
 import json
@@ -68,18 +66,6 @@ class Network():
         return self.thread.is_alive()
     
     def load(self):
-        # session = boto3.session.Session()
-        # client = session.client('s3',
-        #                         region_name=self.global_config["digital_ocean"]["region"],
-        #                         endpoint_url=self.global_config["digital_ocean"]["endpoint"],
-        #                         aws_access_key_id=self.global_config["digital_ocean"]["access_key"],
-        #                         aws_secret_access_key=self.global_config["digital_ocean"]["access_secret"])
-
-        # client.download_file(
-        #                     self.global_config["digital_ocean"]["space"], 
-        #                     self.global_config["digital_ocean"]["model_file"], 
-        #                     self.local_model_file)
-        # raise botocore.exceptions.ClientError()
         zipf = zipfile.ZipFile(self.local_model_file, 'r')
         zipf.extractall(".")
         zipf.close()

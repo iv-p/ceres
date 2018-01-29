@@ -1,6 +1,4 @@
-FROM alpine:3.7
-RUN apk add --update --no-cache g++ gcc libxslt-dev python3-dev \
-    && pip3 --no-cache-dir install pyyaml lxml numpy textblob tweepy requests pymongo flask
+FROM ceres
 ADD . /opt/
 EXPOSE 5000
 CMD ["python3", "/opt/main.py"]

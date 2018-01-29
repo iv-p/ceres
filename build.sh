@@ -4,6 +4,8 @@ CONFIG="${TARGET}/config/"
 PROFILE="${1}"
 
 #  BUILD MODULES
+docker build -t ceres config/
+
 docker build -t data-fetcher data-fetcher/
 docker build -t data-distributor data-distributor/
 docker build -t decision-maker decision-maker/
