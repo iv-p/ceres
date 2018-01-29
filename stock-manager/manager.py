@@ -25,7 +25,9 @@ class Manager:
         app.add_url_rule("/buy/<currency>", "buy", self.buy)
         app.add_url_rule("/sell/<currency>", "sell", self.sell)
         app.add_url_rule("/worth", "worth", self.get_worth)
-        app.add_url_rule("/stocks", "stocks", self.get_stocks)
+        app.add_url_rule("/stocks/active", "stocks", self.get_stocks_active)
+        app.add_url_rule("/stocks/history", "stocks_history", self.get_stocks_history)
+
 
         @app.route("/healthcheck")
         def healthcheck():
@@ -74,7 +76,7 @@ class Manager:
             worth += price * stock["quantity"]
         return str(worth + self.wallet)
 
-    def get_stocks(self):
+    def get_stocks_active(self):
         stocks = self.db.get("manager", "stocks").find({"sell": None})
         stocks_list = []
         for stock in stocks:
@@ -84,7 +86,18 @@ class Manager:
                 "buy_price": stock["buy"]["price"]
             }
             stocks_list.append(s)
-        print(stocks_list)
+        return json.dumps(stocks_list)
+
+    def get_stocks_history(self):
+        stocks = self.db.get("manager", "stocks").find()
+        stocks_list = []
+        for stock in stocks:
+            s = {
+                "symbol": stock["symbol"],
+                "quantity": stock["quantity"],
+                "buy_price": stock["buy"]["price"]
+            }
+            stocks_list.append(s)
         return json.dumps(stocks_list)
 
     def sell_stock(self, stock, price):

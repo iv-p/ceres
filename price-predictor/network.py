@@ -26,27 +26,33 @@ class Network():
         self.global_config = global_config
         self.currency_config = currency_config
         self.db = db
-        self.load()
 
         self.thread = threading.Thread(target=self.run, args=())
         self.thread.daemon = True
         self.thread.start()
 
     def tick(self):
+        print("tick")
         with tf.Session() as net:
+            self.load()
             saver = tf.train.Saver()
             saver.restore(net, self.local_model_dir + self.global_config["neural_network"]["model_file"])
 
             for currency_code in self.currency_config.keys():
+                print(currency_code)
                 r = requests.get(self.global_config["url"]["data-distributor"] + "/" + currency_code + "/prediction_data")
                 X_test = np.array([json.loads(r.text)])
+                print(X_test)
                 pred = net.run(self.out, feed_dict={self.X: X_test})
+                print(pred)
                 timestamp = int(roundTime(datetime.datetime.now()).timestamp())
                 data = {
                     "timestamp": timestamp,
                     "predictions": pred[0].tolist()
                 }
                 self.db.get(currency_code, "predictions").insert_one(data)
+                print("prediction for " + currency_code + " is " + str(data["predictions"]))
+            net.close()
 
     def run(self):
         starttime=time.time()
@@ -62,7 +68,7 @@ class Network():
         return self.thread.is_alive()
     
     def load(self):
-        session = boto3.session.Session()
+        # session = boto3.session.Session()
         # client = session.client('s3',
         #                         region_name=self.global_config["digital_ocean"]["region"],
         #                         endpoint_url=self.global_config["digital_ocean"]["endpoint"],
@@ -91,13 +97,11 @@ class Network():
             dense = tf.layers.dense(
                                     inputs=layer_objects[-1], 
                                     units=layer["neurons"], 
-                                    activation=tf.nn.relu,
-                                    name=layer["name"] + "-dense")
+                                    activation=tf.nn.relu)
             dropout = tf.layers.dropout(
                                     inputs=dense, 
                                     rate=layer["dropout"], 
-                                    training=True,
-                                    name=layer["name"] + "-dropout")
+                                    training=True)
             layer_objects = np.append(layer_objects, dropout)
 
         self.out = tf.layers.dense(inputs=layer_objects[-1], units=2, activation=tf.nn.relu)

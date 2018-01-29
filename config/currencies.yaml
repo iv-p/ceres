@@ -13,13 +13,21 @@ xlm:
 
 nuls:
   symbol: NULSETH
-  email:
-    domain: cointler.com
-    username: nuls
-    password: yb^28dJC?3bY
-  twitter:
-    hashtags:
-      - xlm
-    timelines:
-      - StellarLumens
-      - StellarOrg
+
+ltc:
+  symbol: LTCETH
+
+xrp:
+  symbol: XRPETH
+
+lend:
+  symbol: LENDETH
+
+req:
+  symbol: REQETH
+
+ven:
+  symbol: VENETH
+
+bts:
+  symbol: BTSETH
