@@ -18,7 +18,7 @@ def roundTime(dt=None, roundTo=60):
 
 class Network():
     local_model_file = "/data/model.zip"
-    local_model_dir = "./data/model/"
+    local_model_dir = "./model/"
 
     def __init__(self, global_config, currency_config, db):
         self.global_config = global_config
@@ -30,19 +30,16 @@ class Network():
         self.thread.start()
 
     def tick(self):
-        print("tick")
+        tf.reset_default_graph()
+        self.load()
         with tf.Session() as net:
-            self.load()
             saver = tf.train.Saver()
             saver.restore(net, self.local_model_dir + self.global_config["neural_network"]["model_file"])
 
             for currency_code in self.currency_config.keys():
-                print(currency_code)
                 r = requests.get(self.global_config["url"]["data-distributor"] + "/" + currency_code + "/prediction_data")
                 X_test = np.array([json.loads(r.text)])
-                print(X_test)
                 pred = net.run(self.out, feed_dict={self.X: X_test})
-                print(pred)
                 timestamp = int(roundTime(datetime.datetime.now()).timestamp())
                 data = {
                     "timestamp": timestamp,
@@ -56,11 +53,11 @@ class Network():
         starttime=time.time()
         interval = self.global_config["price-predictor"]["interval"]
         while True:
-            try:
-                self.tick()
-                time.sleep(interval - ((time.time() - starttime) % interval))
-            except:
-                pass
+            # try:
+            self.tick()
+            time.sleep(interval - ((time.time() - starttime) % interval))
+            # except e:
+            #     print(e)
 
     def healthcheck(self):
         return self.thread.is_alive()
@@ -74,7 +71,6 @@ class Network():
         self.define_model()
 
     def define_model(self):
-        tf.reset_default_graph()
         self.X = tf.placeholder(dtype=tf.float32, shape=[None, self.params["input"]])
         self.Y = tf.placeholder(dtype=tf.float32, shape=[None, self.params["output"]])
 
@@ -82,11 +78,13 @@ class Network():
         for i, layer in enumerate(self.params["layers"]):
             dense = tf.layers.dense(
                                     inputs=layer_objects[-1], 
-                                    units=layer["neurons"], 
+                                    units=layer["neurons"],
+                                    # name=layer["name_1"],
                                     activation=tf.nn.relu)
             dropout = tf.layers.dropout(
                                     inputs=dense, 
                                     rate=layer["dropout"], 
+                                    # name=layer["name_2"],
                                     training=True)
             layer_objects = np.append(layer_objects, dropout)
 

@@ -95,7 +95,9 @@ class Network():
         for _ in range(0, num_layers):
             layers = np.append(layers, {
                 "neurons" : random.randint(self.params["min_neurons"], self.params["max_neurons"]),
-                "dropout" : random.uniform(self.params["min_dropout"], self.params["max_dropout"])
+                "dropout" : random.uniform(self.params["min_dropout"], self.params["max_dropout"]),
+                "name_1": str(uuid.uuid4()),
+                "name_2": str(uuid.uuid4()),
             })
         return layers
 
@@ -107,19 +109,20 @@ class Network():
         for i, layer in enumerate(self.layers):
             dense = tf.layers.dense(
                                     inputs=layer_objects[-1], 
-                                    units=layer["neurons"], 
-                                    activation=tf.nn.relu,
-                                    name=str(uuid.uuid4()) + "-dense")
+                                    units=layer["neurons"],
+                                    # name=layer["name_1"],
+                                    activation=tf.nn.relu)
             dropout = tf.layers.dropout(
                                     inputs=dense, 
                                     rate=layer["dropout"],
-                                    training=True,
-                                    name=str(uuid.uuid4()) + "-dropout")
+                                    # name=layer["name_2"],
+                                    training=True)
             layer_objects = np.append(layer_objects, dropout)
 
         out = tf.layers.dense(inputs=layer_objects[-1], units=self.params["output_size"], activation=tf.nn.relu)
         mse = tf.reduce_mean(tf.squared_difference(out, Y))
-        opt = tf.train.AdamOptimizer().minimize(mse)
+        learning_rate = random.uniform(self.params["min_learning_rate"], self.params["max_learning_rate"])
+        opt = tf.train.AdamOptimizer(learning_rate).minimize(mse)
 
         return X, Y, opt, mse
     
@@ -141,13 +144,6 @@ class Network():
         zipf = zipfile.ZipFile("../target/data/" + self.local_model_file, 'w', zipfile.ZIP_DEFLATED)
         zipdir(self.local_model_dir, zipf)
         zipf.close()
-
-        # ssh = SSHClient()
-        # ssh.load_system_host_keys()
-        # ssh.connect(hostname=self.config["vm"]["hostname"], username=self.config["vm"]["username"])
-
-        # with SCPClient(ssh.get_transport()) as scp:
-        #     scp.put(self.local_model_file, "/data/model.zip")
 
     def export(self):
         return {

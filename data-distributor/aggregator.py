@@ -39,7 +39,7 @@ class Aggregator:
                 data = np.vstack((data, result))
 
         np.save(self.global_config["neural_network"]["training_file"], data)
-        print(str(data.shape[0]) + " sets of data saved")
+        print(str(data.shape) + " sets of data saved")
 
     def run(self):
         starttime=time.time()

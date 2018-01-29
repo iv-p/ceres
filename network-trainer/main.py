@@ -7,9 +7,8 @@ import yaml
 
 def load_data():
     data = np.load("../target/data/nn/training_data.npy")
-    up_to = math.floor(data.shape[0] / 10) * 10
-    X_train = np.asarray(data[:,:5], dtype=np.float64)
-    Y_train = np.asarray(data[:,5:7], dtype=np.float64)
+    X_train = np.asarray(data[:,:1440], dtype=np.float64)
+    Y_train = np.asarray(data[:,1440:], dtype=np.float64)
     return X_train, Y_train, X_train, Y_train
 
 class NetworkTrainer:
@@ -25,18 +24,19 @@ class NetworkTrainer:
         "backup_file": "./run.bac",
         "class": Network,
         "individual_params": {
-            "input_size": 5,
+            "input_size": 1440,
             "output_size": 2,
             "categories": 13,
-            "min_layers": 1,
-            "max_layers": 10,
+            "min_layers": 5,
+            "max_layers": 30,
             "min_neurons": 20,
             "max_neurons": 2000,
             "min_dropout": 0,
             "max_dropout": 0.5,
             "batch_size": 10,
             "total_iters": 10,
-            "base_learning_rate": 0.2,
+            "min_learning_rate": 0.00001,
+            "max_learning_rate": 0.0001,
             "gamma": 0.9,
             "data": load_data()
         }

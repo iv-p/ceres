@@ -10,6 +10,7 @@ def mapper(t):
 class Provider:
     def __init__(self, global_config, db, app):
         self.db = db
+        self.global_config = global_config
         @app.route("/<code>/prediction_data")
         def prediction_data(code):
             return self.prediction_data(code)
@@ -24,7 +25,7 @@ class Provider:
 
     def prediction_data(self, code):
         since_timestamp = 0
-        klines_data = list(self.db.get(code, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(5))
+        klines_data = list(self.db.get(code, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(self.global_config["neural_network"]["input"]))
         count = len(klines_data)
         klines_data = [mapper(x) for x in klines_data]
         return json.dumps(klines_data)

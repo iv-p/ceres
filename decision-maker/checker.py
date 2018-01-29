@@ -1,7 +1,6 @@
 import pymongo
 import numpy as np
 import requests
-import datetime
 import time
 import threading
 
@@ -41,7 +40,7 @@ class Checker:
 
                 if verb != None:
                     event = {
-                        "timestamp": datetime.datetime.now(),
+                        "timestamp": str(int(time.time())),
                         "status": response.text,
                         "currency": currency,
                         "event": verb

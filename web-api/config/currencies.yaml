@@ -1,0 +1,33 @@
+xlm:
+  symbol: XLMETH
+  email:
+    domain: cointler.com
+    username: xlm
+    password: yb^28dJC?3bY
+  twitter:
+    hashtags:
+      - xlm
+    timelines:
+      - StellarLumens
+      - StellarOrg
+
+nuls:
+  symbol: NULSETH
+
+ltc:
+  symbol: LTCETH
+
+xrp:
+  symbol: XRPETH
+
+lend:
+  symbol: LENDETH
+
+req:
+  symbol: REQETH
+
+ven:
+  symbol: VENETH
+
+bts:
+  symbol: BTSETH

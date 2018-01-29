@@ -1,16 +1,14 @@
 import yaml
-import numpy as np
 import sys
 from flask import Flask
-
 from db import DB
-from aggregator import Aggregator
-from provider import Provider
-from api import Api
+
+from stocks import Stocks
+from events import Events
 
 global_config_file = "global.yaml"
 currency_config_file = "currencies.yaml"
-config_dir = "/config/"
+config_dir = "./config/"
 
 currency_config = None
 global_config = None
@@ -26,7 +24,6 @@ except IOError:
 
 app = Flask(__name__)
 db = DB(global_config)
-aggregator = Aggregator(global_config, currency_config, db)
-provider = Provider(global_config, db, app)
-api = Api(app, aggregator)
+stocks = Stocks(global_config, currency_config, db, app)
+events = Events(global_config, currency_config, db, app)
 app.run("0.0.0.0")
