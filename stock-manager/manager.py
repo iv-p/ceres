@@ -102,14 +102,14 @@ class Manager:
 
     def sell_stock(self, stock, price):
         stock["sell"] = {
-            "price": price,
+            "price": price * self.global_config["binance"]["loss"],
             "timestamp":int(datetime.datetime.now().timestamp())
         }
 
     def buy_stock(self, symbol, quantity, price):
         return {
             "symbol": symbol,
-            "quantity": quantity,
+            "quantity": int(quantity * self.global_config["binance"]["loss"]),
             "buy": {
                 "price": price,
                 "timestamp": int(datetime.datetime.now().timestamp())
