@@ -21,6 +21,7 @@ class Aggregator:
         network_output = self.global_config["neural_network"]["output"]
         data = np.empty((0, network_input + network_output))
 
+        print("saving data")
         for currency in self.currency_config.keys():
             since_timestamp = 0
             klines_data = np.array(list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING)))
