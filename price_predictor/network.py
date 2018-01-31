@@ -4,8 +4,6 @@ import os
 import zipfile
 import tensorflow as tf
 import pickle
-import requests
-import json
 import datetime
 import time
 import threading
@@ -20,10 +18,11 @@ class Network():
     local_model_file = "./bin/model.zip"
     local_model_dir = "./bin/model/"
 
-    def __init__(self, global_config, currency_config, db):
+    def __init__(self, global_config, currency_config, db, data_distributor):
         self.global_config = global_config
         self.currency_config = currency_config
         self.db = db
+        self.data_distributor = data_distributor
 
         self.load_file = True
 
@@ -39,17 +38,16 @@ class Network():
             saver = tf.train.Saver()
             saver.restore(net, self.local_model_dir + self.global_config["neural_network"]["model_file"])
 
-            for currency_code in self.currency_config.keys():
-                r = requests.get(self.global_config["url"]["data-distributor"] + "/" + currency_code + "/prediction_data")
-                X_test = np.array([json.loads(r.text)])
+            for currency in self.currency_config.keys():
+                X_test = self.data_distributor.provider.prediction_data(currency)
                 pred = net.run(self.out, feed_dict={self.X: X_test})
                 timestamp = int(roundTime(datetime.datetime.now()).timestamp())
                 data = {
                     "timestamp": timestamp,
                     "predictions": pred[0].tolist()
                 }
-                self.db.get(currency_code, "predictions").insert_one(data)
-                print("prediction for " + currency_code + " is " + str(data["predictions"]))
+                self.db.get(currency, "predictions").insert_one(data)
+                print("prediction for " + currency + " is " + str(data["predictions"]))
             net.close()
 
     def run(self):
@@ -59,9 +57,8 @@ class Network():
             # try:
             self.tick()
             time.sleep(interval - ((time.time() - starttime) % interval))
-            # except e:
-            #     print(e)
-
+            # except:
+                # pass
     def healthcheck(self):
         return self.thread.is_alive()
     

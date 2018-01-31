@@ -9,6 +9,7 @@ from price_predictor.price_predictor import PricePredictor
 from decision_maker.decision_maker import DecisionMaker
 from stock_manager.stock_manager import StockManager
 from manager.manager import Manager
+from web_api.web_api import WebApi
 
 global_config_file = "global.yaml"
 currency_config_file = "currencies.yaml"
@@ -26,14 +27,12 @@ except IOError:
     print("Error loading configuration files.")
     sys.exit(1)
 
-app = Flask(__name__)
 db = DB(global_config)
 
-data_fetcher = DataFetcher(global_config, currency_config, app, db)
-data_distributor = DataDistributor(global_config, currency_config, app, db)
-price_predictor = PricePredictor(global_config, currency_config, app, db)
-decision_maker = DecisionMaker(global_config, currency_config, app, db)
-stock_manager = StockManager(global_config, currency_config, app, db)
-manager = Manager(global_config, currency_config, app, db)
+data_fetcher = DataFetcher(global_config, currency_config, db)
+data_distributor = DataDistributor(global_config, currency_config, db)
+price_predictor = PricePredictor(global_config, currency_config, db, data_distributor)
+stock_manager = StockManager(global_config, currency_config, db)
+decision_maker = DecisionMaker(global_config, currency_config, db, stock_manager)
 
-app.run("0.0.0.0")
+web_api = WebApi(global_config, currency_config, db)

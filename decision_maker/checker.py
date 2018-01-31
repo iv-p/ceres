@@ -1,6 +1,5 @@
 import pymongo
 import numpy as np
-import requests
 import time
 import threading
 
@@ -8,10 +7,11 @@ def mapper(x):
     return np.average(x["predictions"])
 
 class Checker:
-    def __init__(self, global_config, currency_config, db):
+    def __init__(self, global_config, currency_config, db, stock_manager):
         self.global_config = global_config
         self.currency_config = currency_config
         self.db = db
+        self.stock_manager = stock_manager
         self.buy_threshold = self.global_config["decision-maker"]["thresholds"]["buy"]
         self.sell_threshold = self.global_config["decision-maker"]["thresholds"]["sell"]
 
@@ -31,17 +31,17 @@ class Checker:
                 response = None
                 if predicted > self.buy_threshold:
                     print("buy")
-                    response = requests.get(self.global_config["url"]["stock-manager"] + "/buy/" + currency)
+                    response = self.stock_manager.manager.buy(currency)
                     verb = "buy"
                 elif predicted < self.sell_threshold:
                     print("sell")
-                    response = requests.get(self.global_config["url"]["stock-manager"] + "/sell/" + currency)
+                    response = self.stock_manager.manager.sell(currency)
                     verb = "sell"
 
                 if verb != None:
                     event = {
                         "timestamp": str(int(time.time())),
-                        "status": response.text,
+                        "status": response,
                         "currency": currency,
                         "event": verb
                     }

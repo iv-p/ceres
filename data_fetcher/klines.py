@@ -50,11 +50,11 @@ class Klines:
         starttime=time.time()
         interval = self.global_config["data-fetcher"]["klines"]
         while True:
-            try:
-                self.tick()
-                time.sleep(interval - ((time.time() - starttime) % interval))
-            except Exception:
-                pass
+            # try:
+            self.tick()
+            time.sleep(interval - ((time.time() - starttime) % interval))
+            # except Exception:
+            #     pass
 
     def healthcheck(self):
         return self.thread.is_alive()
