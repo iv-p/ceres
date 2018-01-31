@@ -39,9 +39,13 @@
   },
   "homepage": "https://github.com/Granze/react-starterify",
   "dependencies": {
+    "axios": "^0.17.1",
+    "chart.js": "^2.7.1",
     "history": "^3.0.0",
-    "react": "^15.0.1",
-    "react-dom": "^15.0.1",
+    "react": "^15.6.2",
+    "react-bootstrap": "^0.32.1",
+    "react-chartjs-2": "^2.7.0",
+    "react-dom": "^15.6.2",
     "react-router": "^2.3.0"
   },
   "devDependencies": {

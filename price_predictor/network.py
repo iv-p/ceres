@@ -40,7 +40,7 @@ class Network():
 
             for currency in self.currency_config.keys():
                 X_test = self.data_distributor.provider.prediction_data(currency)
-                pred = net.run(self.out, feed_dict={self.X: X_test})
+                pred = net.run(self.out, feed_dict={self.X: [X_test]})
                 timestamp = int(roundTime(datetime.datetime.now()).timestamp())
                 data = {
                     "timestamp": timestamp,

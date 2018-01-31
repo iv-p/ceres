@@ -7,7 +7,7 @@ binance:
   loss: 0.99 # 1% loss
 database_dir: db/
 mongodb:
-  location: 46.101.17.4
+  location: 35.205.206.85
 twitter:
   consumer_key: 7nQ1evwDEcuI3x0OYItLhZO95
   consumer_secret: lboFeJtUxAwB9ySXwwkQm4G1jiFxZuOls6rApJKi22jeJZVDhR
