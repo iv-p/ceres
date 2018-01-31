@@ -16,8 +16,9 @@ twitter:
 neural_network:
   input: 1440
   output: 2
-  training_file: /data/training_data.npy
+  training_file: ./bin/training_data.npy
   model_file: model.ckpt
+  bump: http://localhost:8081/bump
 vm:
   hostname: 159.65.24.75
   username: root

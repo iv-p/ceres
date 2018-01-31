@@ -1,4 +1,0 @@
-FROM ceres
-ADD . /opt/
-EXPOSE 5000
-CMD ["python3", "/opt/main.py"]
