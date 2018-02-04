@@ -10,7 +10,7 @@ class Events extends React.Component {
       events: []
     };
 
-    axios.get('http://localhost:5000/events')
+    axios.get('http://localhost:1337/events')
       .then(res => {
         const events = res.data;
         this.setState({ events });

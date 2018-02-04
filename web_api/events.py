@@ -17,6 +17,7 @@ class Events:
             events = self.db.get("manager", "events").find().sort("timestamp", pymongo.DESCENDING)
         else:
             events = self.db.get("manager", "events").find({"currency": currency}).sort("timestamp", pymongo.DESCENDING)
+        events = events.limit(500)
         events_list = []
         for events in events:
             s = {
@@ -30,6 +31,7 @@ class Events:
 
     def get_type_events_history(self, typ):
         events = self.db.get("manager", "events").find({"event": typ}).sort("timestamp", pymongo.DESCENDING)
+        events = events.limit(500)
         events_list = []
         for events in events:
             s = {

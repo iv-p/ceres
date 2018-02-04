@@ -7,12 +7,7 @@ import zipfile
 import tensorflow as tf
 import pickle
 
-from paramiko import SSHClient
-from scp import SCPClient
-
-
 def zipdir(path, ziph):
-    # ziph is zipfile handle
     for root, dirs, files in os.walk(path):
         for file in files:
             ziph.write(os.path.join(root, file))
@@ -143,9 +138,7 @@ class Network():
 
         zipf = zipfile.ZipFile("../bin/" + self.local_model_file, 'w', zipfile.ZIP_DEFLATED)
         zipdir(self.local_model_dir, zipf)
-        zipf.close()
-
-        # requests.get(self.params["neural_network"]["bump"])
+        zipf.close()      
 
     def export(self):
         return {

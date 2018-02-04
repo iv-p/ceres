@@ -46,7 +46,8 @@
     "react-bootstrap": "^0.32.1",
     "react-chartjs-2": "^2.7.0",
     "react-dom": "^15.6.2",
-    "react-router": "^2.3.0"
+    "react-router": "^2.3.0",
+    "recharts": "^1.0.0-beta.10"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
