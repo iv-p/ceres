@@ -22,8 +22,10 @@ class Predictions extends React.Component {
           const pred = prediction;
           pred.minute = prediction.predictions[0];
           pred.hour = prediction.predictions[1];
+          pred.timestamp = new Date(prediction.timestamp * 1000);
           return pred;
         });
+        console.log(predictions);
         this.setState({ predictions });
       });
   }
@@ -53,7 +55,7 @@ class Predictions extends React.Component {
           data={this.state.predictions}
           margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
         >
-          <XAxis dataKey="timestamp" height={60} />
+          <XAxis dataKey="timestamp" />
           <YAxis domain={['auto', 'auto']} />
           <Legend />
           <Tooltip />

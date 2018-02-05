@@ -9,7 +9,7 @@ from price_predictor.price_predictor import PricePredictor
 from decision_maker.decision_maker import DecisionMaker
 from stock_manager.stock_manager import StockManager
 from manager.manager import Manager
-from web_api.web_api import WebApi
+from api.web_api import WebApi
 
 global_config_file = "global.yaml"
 currency_config_file = "currencies.yaml"

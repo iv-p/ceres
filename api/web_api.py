@@ -1,6 +1,6 @@
-from web_api.stocks import Stocks
-from web_api.events import Events
-from web_api.predictions import Predictions
+from api.stocks import Stocks
+from api.events import Events
+from api.predictions import Predictions
 from flask import Flask
 from flask_cors import CORS, cross_origin
 
