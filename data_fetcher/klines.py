@@ -7,11 +7,11 @@ import time
 
 def mapper(t):
     return {
-                "timestamp": t[0],
-                "open": t[1],
-                "high": t[2],
-                "low": t[3],
-                "close": t[4]
+        "timestamp": t[0],
+        "open": t[1],
+        "high": t[2],
+        "low": t[3],
+        "close": t[4]
             }
 
 class Klines:
@@ -33,7 +33,8 @@ class Klines:
                 unique=True)
             payload = {
                 "symbol": self.currency_config[currency]["symbol"],
-                "interval": self.global_config["binance"]["interval"]
+                "interval": self.global_config["binance"]["interval"],
+                "startTime": 1514764800
             }
 
             if latest_kline.count() > 0:

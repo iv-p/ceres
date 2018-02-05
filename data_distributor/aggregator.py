@@ -15,8 +15,7 @@ class Aggregator:
 
         self.thread = threading.Thread(target=self.run, args=())
         self.thread.daemon = True
-        # self.thread.start()
-        self.run()
+        self.thread.start()
 
     def tick(self):
         network_input = self.global_config["neural_network"]["input"]
@@ -26,19 +25,18 @@ class Aggregator:
         print("saving data")
         shortest_data_count = 0
         for currency in self.currency_config.keys():
-            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING).limit(2*1440))
+            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING))
             klines_data = [mapper(x) for x in klines_data]
             currency_data[currency] = klines_data
             if len(klines_data) < shortest_data_count or shortest_data_count == 0:
-                print(currency, len(klines_data))
                 shortest_data_count = len(klines_data)
         
-        print(shortest_data_count)
         lin_regression_x = np.arange(network_input)
         data_per_currency = shortest_data_count - network_input - 61
         num_of_currencies = len(self.currency_config.keys())
         data = np.empty((data_per_currency * num_of_currencies , network_input + network_output + 1))
-
+        
+        j = 0
         for i in range(0, data_per_currency):
             # calculate the global trend
             slopes = []
@@ -47,25 +45,24 @@ class Aggregator:
                 slopes.append(slope)
 
             general_trend = np.average(slopes)
-            if general_trend > 0:
-                print(general_trend)
 
-            j = 0
             for currency in currency_data.keys():
                 input_data = currency_data[currency][i:i + network_input + 61]
 
-                label_data = np.array([])
-                label_data = np.append(label_data, input_data[network_input + 1])
+                label_data = input_data[network_input + 1]
                 label_data = np.append(label_data, input_data[network_input + 60])
 
                 # normalize the data
-                input_data = input_data[:network_input] / np.max(input_data[:network_input])
+                max_value = np.max(input_data[:network_input])
+                input_data = input_data[:network_input] / max_value
+                label_data = label_data / max_value
                 input_data = np.append(input_data, general_trend)
 
                 result = np.append(input_data, label_data)
-                result = result / np.max(result[:network_input])
-                data[i * num_of_currencies + j] = result
+                data[j] = result
                 j+=1
+
+        data = data[:j]
 
         np.save(self.global_config["neural_network"]["training_file"], data)
         print(str(data.shape) + " sets of data saved")

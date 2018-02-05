@@ -42,11 +42,12 @@ class Network():
                 X_test = self.data_distributor.provider.prediction_data(currency)
                 pred = net.run(self.out, feed_dict={self.X: [X_test]})
                 timestamp = int(roundTime(datetime.datetime.now()).timestamp())
-                price_predictions = pred[0].tolist() * self.data_distributor.provider.get_price(currency)
+                # print(float(pred[0].tolist()))
+                price_predictions = np.array(pred[0].tolist(), dtype=np.float64) * self.data_distributor.provider.get_average_price(currency)
                 data = {
                     "timestamp": timestamp,
                     "predictions": pred[0].tolist(),
-                    "price_predictions": price_predictions
+                    "price_predictions": price_predictions.tolist()
                 }
                 self.db.get(currency, "predictions").insert_one(data)
                 print("prediction for " + currency + " is " + str(data["predictions"]))
