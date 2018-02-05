@@ -20,8 +20,8 @@ class Predictions extends React.Component {
       .then(res => {
         const predictions = res.data.map(prediction => {
           const pred = prediction;
-          pred.minute = prediction.predictions[0];
-          pred.hour = prediction.predictions[1];
+          pred.minute = prediction.price_predictions[0];
+          pred.hour = prediction.price_predictions[1];
           pred.timestamp = new Date(prediction.timestamp * 1000);
           return pred;
         });
