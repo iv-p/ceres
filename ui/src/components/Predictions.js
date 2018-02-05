@@ -25,7 +25,6 @@ class Predictions extends React.Component {
           pred.timestamp = new Date(prediction.timestamp * 1000);
           return pred;
         });
-        console.log(predictions);
         this.setState({ predictions });
       });
   }
@@ -36,7 +35,9 @@ class Predictions extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.getPredictions(this.state.value);
+    if (this.state.value !== '') {
+      this.getPredictions(this.state.value);
+    }
   }
 
   render() {
