@@ -3,14 +3,32 @@ import { Link } from 'react-router';
 
 const App = ({ children }) => (
   <div>
-    <header>
-      <h1>White wave</h1>
-      <Link to="/events">events</Link>
-      <Link to="/predictions">predictions</Link>
-    </header>
-    <section>
-      {children || 'Welcome to React Starterify'}
-    </section>
+    <nav className="navbar navbar-toggleable-md navbar-light bg-faded">
+      <button
+        className="navbar-toggler navbar-toggler-right"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <a className="navbar-brand" href="/">White Wave</a>
+
+      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item active">
+            <Link to="/events" className="nav-link">Events</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/predictions" className="nav-link">Predictions</Link>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    {children || 'Welcome to React Starterify'}
   </div>
 );
 

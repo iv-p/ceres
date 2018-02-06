@@ -7,11 +7,15 @@ import yaml
 
 def load_data():
     data = np.load("../bin/training_data.npy")
-    X_train = np.asarray(data[:,:1441], dtype=np.float64)
-    Y_train = np.asarray(data[:,1441:], dtype=np.float64)
-    print(X_train[0])
-    print(Y_train[0])
-    return X_train, Y_train, X_train, Y_train
+    np.random.shuffle(data)
+    up_to = int(data.shape[0] * 0.9)
+    X_train = np.asarray(data[:up_to,:1441], dtype=np.float64)
+    Y_train = np.asarray(data[:up_to,1441:], dtype=np.float64)
+    X_test = np.asarray(data[up_to:,:1441], dtype=np.float64)
+    Y_test = np.asarray(data[up_to:,1441:], dtype=np.float64)
+    print(X_train.shape)
+    print(X_test.shape)
+    return X_train, Y_train, X_test, Y_test
 
 class NetworkTrainer:
     global_config_file = "global"
@@ -35,8 +39,8 @@ class NetworkTrainer:
             "max_neurons": 2000,
             "min_dropout": 0,
             "max_dropout": 0.5,
-            "batch_size": 100,
-            "total_iters": 100,
+            "batch_size": 1000,
+            "total_iters": 20,
             "min_learning_rate": 0.00001,
             "max_learning_rate": 0.0001,
             "data": load_data()

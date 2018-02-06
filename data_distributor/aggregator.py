@@ -18,6 +18,7 @@ class Aggregator:
         self.thread.start()
 
     def tick(self):
+        np.set_printoptions(threshold=np.nan)
         network_input = self.global_config["neural_network"]["input"]
         network_output = self.global_config["neural_network"]["output"]
         currency_data = {}
@@ -35,7 +36,7 @@ class Aggregator:
         data_per_currency = shortest_data_count - network_input - 61
         num_of_currencies = len(self.currency_config.keys())
         data = np.empty((data_per_currency * num_of_currencies , network_input + network_output + 1))
-        
+
         j = 0
         for i in range(0, data_per_currency):
             # calculate the global trend

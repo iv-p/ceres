@@ -1,5 +1,4 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
 import axios from 'axios';
 
 class Events extends React.Component {
@@ -28,7 +27,7 @@ class Events extends React.Component {
     );
 
     return (
-      <Table striped bordered condensed hover>
+      <table className="table">
         <thead>
           <tr>
             <th>timestamp</th>
@@ -40,7 +39,7 @@ class Events extends React.Component {
         <tbody>
           {eventList}
         </tbody>
-      </Table>
+      </table>
     );
   }
 }

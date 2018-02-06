@@ -6,6 +6,7 @@ import os
 import zipfile
 import tensorflow as tf
 import pickle
+import sys
 
 def zipdir(path, ziph):
     for root, dirs, files in os.walk(path):
@@ -58,12 +59,10 @@ class Network():
             sess.run(tf.global_variables_initializer())
             X_train, Y_train, X_testing, Y_testing = self.params["data"]
             for iteration in range(self.params["total_iters"]):
-                shuffle_indices = np.random.permutation(np.arange(len(Y_train)))
-                X_train = X_train[shuffle_indices]
-                Y_train = Y_train[shuffle_indices]
-
                 losses = np.zeros(len(Y_train) // self.params["batch_size"])
                 # Minibatch training
+                print("test")
+                sys.stdout.write(".")
                 for batch in range(0, len(Y_train) // self.params["batch_size"]):
                     start = batch * self.params["batch_size"]
                     batch_x = X_train[start:start + self.params["batch_size"]]
@@ -73,7 +72,7 @@ class Network():
 
             self.loss = sess.run(mse, feed_dict={X: X_testing, Y: Y_testing})
             if self.loss < best_fitness:
-                print("saving model.")
+                print(str(self.loss) + " saving model.")
                 self.save_model(sess)
 
             print (".")

@@ -1,13 +1,15 @@
 import React from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import NetWorth from './home/NetWorth';
+import TopCurrencies from './home/TopCurrencies';
 
 class Predictions extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      predictions: [],
+      prices: [],
       value: ''
     };
 
@@ -16,16 +18,22 @@ class Predictions extends React.Component {
   }
 
   getPredictions(currency) {
-    axios.get(`http://localhost:1337/predictions/currency/${currency}`)
+    // axios.get(`http://localhost:1337/predictions/currency/${currency}`)
+    //   .then(res => {
+    //     const predictions = res.data.map(prediction => {
+    //       const pred = prediction;
+    //       pred.minute = prediction.price_predictions[0];
+    //       pred.hour = prediction.price_predictions[1];
+    //       pred.timestamp = new Date(prediction.timestamp * 1000);
+    //       return pred;
+    //     });
+    //     this.setState({ predictions });
+    //   });
+    axios.get(`http://localhost:1337/price/currency/${currency}`)
       .then(res => {
-        const predictions = res.data.map(prediction => {
-          const pred = prediction;
-          pred.minute = prediction.price_predictions[0];
-          pred.hour = prediction.price_predictions[1];
-          pred.timestamp = new Date(prediction.timestamp * 1000);
-          return pred;
-        });
-        this.setState({ predictions });
+        const prices = res.data;
+        console.log(prices);
+        this.setState({ prices });
       });
   }
 
@@ -42,7 +50,11 @@ class Predictions extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="container">
+        <div className="row">
+          <NetWorth />
+          <TopCurrencies />
+        </div>
         <form onSubmit={this.handleSubmit}>
           <label>
             Name:
@@ -53,15 +65,15 @@ class Predictions extends React.Component {
         <LineChart
           width={1280}
           height={500}
-          data={this.state.predictions}
+          data={this.state.prices}
           margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
         >
           <XAxis dataKey="timestamp" />
           <YAxis domain={['auto', 'auto']} />
           <Legend />
           <Tooltip />
-          <Line type="monotone" dot={false} dataKey="minute" stroke="#8884d8" />
-          <Line type="monotone" dot={false} dataKey="hour" stroke="#0084d8" />
+          <Line type="monotone" dot={false} dataKey="price" stroke="#8884d8" />
+          {/* <Line type="monotone" dot={false} dataKey="hour" stroke="#0084d8" /> */}
         </LineChart>
       </div>
     );
