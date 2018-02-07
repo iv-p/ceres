@@ -12,21 +12,21 @@ class Provider:
         self.global_config = global_config
         self.currency_config = currency_config
 
-    def prediction_data(self, code):
-        since_timestamp = 0
-        slopes = []
-        lin_regression_x = np.arange(self.global_config["neural_network"]["input"])
-        for currency in self.currency_config.keys():
-            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING).limit(1440))
-            klines_data = [mapper(x) for x in klines_data]
-            slope = stats.linregress(lin_regression_x, klines_data)
-            slopes.append(slope)
-
-        global_trend = np.average(slopes)
-        klines_data = list(self.db.get(code, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(self.global_config["neural_network"]["input"]))
-        count = len(klines_data)
+    def prediction_data(self, currency):
+        network_input = self.global_config["neural_network"]["input"]
+        result = np.empty((1, 50, network_input))
+        klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING).limit(network_input + 49))
         klines_data = [mapper(x) for x in klines_data]
-        return np.append(klines_data, global_trend)
+
+        batch = np.empty((50, network_input))
+
+        for i in range(0, 50):
+            input = klines_data[i:i + network_input]
+            input = input / np.max(input)
+            batch[i] = input
+
+        print(batch)
+        return batch
 
     def get_price(self, code):
         klines_data = list(self.db.get(code, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(1))

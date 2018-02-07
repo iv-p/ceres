@@ -75,26 +75,44 @@ class Network():
         self.load_file = False
 
     def define_model(self):
-        self.X = tf.placeholder(dtype=tf.float32, shape=[None, self.params["input"]])
-        self.Y = tf.placeholder(dtype=tf.float32, shape=[None, self.params["output"]])
+        # self.X = tf.placeholder(dtype=tf.float32, shape=[None, self.params["input"]])
+        # self.Y = tf.placeholder(dtype=tf.float32, shape=[None, self.params["output"]])
 
-        layer_objects = np.array([ self.X ])
-        for i, layer in enumerate(self.params["layers"]):
-            dense = tf.layers.dense(
-                                    inputs=layer_objects[-1], 
-                                    units=layer["neurons"],
-                                    # name=layer["name_1"],
-                                    activation=tf.nn.relu)
-            dropout = tf.layers.dropout(
-                                    inputs=dense, 
-                                    rate=layer["dropout"], 
-                                    # name=layer["name_2"],
-                                    training=True)
-            layer_objects = np.append(layer_objects, dropout)
+        # layer_objects = np.array([ self.X ])
+        # for i, layer in enumerate(self.params["layers"]):
+        #     dense = tf.layers.dense(
+        #                             inputs=layer_objects[-1], 
+        #                             units=layer["neurons"],
+        #                             # name=layer["name_1"],
+        #                             activation=tf.nn.relu)
+        #     dropout = tf.layers.dropout(
+        #                             inputs=dense, 
+        #                             rate=layer["dropout"], 
+        #                             # name=layer["name_2"],
+        #                             training=True)
+        #     layer_objects = np.append(layer_objects, dropout)
 
-        self.out = tf.layers.dense(inputs=layer_objects[-1], units=2, activation=tf.nn.relu)
+        # self.out = tf.layers.dense(inputs=layer_objects[-1], units=2, activation=tf.nn.relu)
+        # self.mse = tf.reduce_mean(tf.squared_difference(self.out, self.Y))
+        # self.opt = tf.train.AdamOptimizer().minimize(self.mse)
+        
+        self.X = tf.placeholder(tf.float32, [None, 50, self.params["input"]])
+        self.Y = tf.placeholder(tf.float32, [None, 50, self.params["output"]])
+
+        def rnn_cell(size):
+            return tf.contrib.rnn.LSTMCell(num_units=size, activation=tf.nn.relu)
+
+        stacked_lstm = tf.contrib.rnn.MultiRNNCell(
+            [rnn_cell(layer["neurons"]) for layer in self.params["layers"]])
+
+        output, state = tf.nn.dynamic_rnn(stacked_lstm, self.X, dtype=tf.float32)
+
+        self.out = tf.layers.dense(
+            inputs=output,
+            units=self.params["output"], 
+            activation=tf.nn.relu)
+
         self.mse = tf.reduce_mean(tf.squared_difference(self.out, self.Y))
-        self.opt = tf.train.AdamOptimizer().minimize(self.mse)
 
     def bump(self):
         self.load_file = True

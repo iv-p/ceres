@@ -9,12 +9,12 @@ def load_data():
     data = np.load("../bin/training_data.npy")
     np.random.shuffle(data)
     up_to = int(data.shape[0] * 0.9)
-    X_train = np.asarray(data[:up_to,:1441], dtype=np.float64)
-    Y_train = np.asarray(data[:up_to,1441:], dtype=np.float64)
-    X_test = np.asarray(data[up_to:,:1441], dtype=np.float64)
-    Y_test = np.asarray(data[up_to:,1441:], dtype=np.float64)
+    X_train = np.asarray(data[:up_to,:,:1440], dtype=np.float64)
+    Y_train = np.asarray(data[:up_to,:,1440:], dtype=np.float64)[:,:,0]
+    X_test = np.asarray(data[up_to:,:,:1440], dtype=np.float64)
+    Y_test = np.asarray(data[up_to:,:,1440:], dtype=np.float64)[:,:,0]
     print(X_train.shape)
-    print(X_test.shape)
+    print(Y_train.shape)
     return X_train, Y_train, X_test, Y_test
 
 class NetworkTrainer:
@@ -30,17 +30,17 @@ class NetworkTrainer:
         "backup_file": "./run.bac",
         "class": Network,
         "individual_params": {
-            "input_size": 1441,
-            "output_size": 2,
+            "input_size": 1440,
+            "output_size": 50,
             "categories": 13,
-            "min_layers": 2,
-            "max_layers": 10,
+            "min_layers": 1,
+            "max_layers": 2,
             "min_neurons": 20,
-            "max_neurons": 2000,
+            "max_neurons": 50,
             "min_dropout": 0,
             "max_dropout": 0.5,
-            "batch_size": 1000,
-            "total_iters": 20,
+            "batch_size": 10,
+            "total_iters": 2,
             "min_learning_rate": 0.00001,
             "max_learning_rate": 0.0001,
             "data": load_data()

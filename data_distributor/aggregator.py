@@ -3,6 +3,7 @@ import time
 import threading
 import pymongo
 from scipy import stats
+import math
 
 def mapper(t):
     return float(t["high"]) + float(t["low"]) / 2
@@ -17,7 +18,7 @@ class Aggregator:
         self.thread.daemon = True
         self.thread.start()
 
-    def tick(self):
+    def tock(self):
         np.set_printoptions(threshold=np.nan)
         network_input = self.global_config["neural_network"]["input"]
         network_output = self.global_config["neural_network"]["output"]
@@ -36,6 +37,11 @@ class Aggregator:
         data_per_currency = shortest_data_count - network_input - 61
         num_of_currencies = len(self.currency_config.keys())
         data = np.empty((data_per_currency * num_of_currencies , network_input + network_output + 1))
+
+        batches = data_per_currency / network_input
+
+        for currency in self.currency_data.keys():
+            currency_data[currency] = currency_data[currency][:-data_per_currency]
 
         j = 0
         for i in range(0, data_per_currency):
@@ -67,6 +73,40 @@ class Aggregator:
 
         np.save(self.global_config["neural_network"]["training_file"], data)
         print(str(data.shape) + " sets of data saved")
+
+    def tick(self):
+        np.set_printoptions(threshold=np.nan)
+        network_input = self.global_config["neural_network"]["input"]
+        network_output = self.global_config["neural_network"]["output"]
+        currency_data = {}
+        result = np.empty((0, 50, network_input+ network_output))
+        lin_regression_x = np.arange(60)
+
+        print("saving data")
+        shortest_data_count = 0
+        for currency in self.currency_config.keys():
+            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING).limit(3 * 14400))
+            klines_data = [mapper(x) for x in klines_data]
+            data_points = len(klines_data) - network_input - 61
+
+            data = np.empty((math.ceil(data_points / 50), 50, network_input + network_output))
+            batch = np.empty((50, network_input + network_output))
+
+            for i in range(0, data_points):
+                if i % 50 == 0 and i > 0:
+                    data[math.floor(i/50)] = batch 
+
+                input = klines_data[i:i + network_input]
+                input = input / np.max(input)
+                slope = stats.linregress(lin_regression_x, klines_data[i+ network_input + 1:i + network_input + 61])
+                row = np.concatenate((input, [slope.slope]))
+                batch[i % 50] = row
+
+            result = np.vstack((result, data))
+            print(currency)
+
+        np.save(self.global_config["neural_network"]["training_file"], result)
+        print(str(result.shape) + " sets of data saved")
 
     def run(self):
         starttime=time.time()

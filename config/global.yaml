@@ -15,7 +15,7 @@ twitter:
   access_token_secret: XqY68PTH7lCfvDsA73BB2X1Q2bwouoUmFTIfFZF0Dz1dG
 neural_network:
   input: 1440
-  output: 2
+  output: 1
   training_file: ./bin/training_data.npy
   model_file: model.ckpt
   bump: http://localhost:8081/bump
