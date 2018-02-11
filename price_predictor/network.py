@@ -50,7 +50,7 @@ class Network():
                     "price_predictions": price_predictions.tolist()
                 }
                 self.db.get(currency, "predictions").insert_one(data)
-                print("prediction for " + currency + " is " + str(data["predictions"]))
+                # print("prediction for " + currency + " is " + str(data["predictions"]))
             net.close()
 
     def run(self):

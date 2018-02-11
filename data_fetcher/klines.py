@@ -12,7 +12,7 @@ def mapper(t):
         "high": t[2],
         "low": t[3],
         "close": t[4]
-            }
+    }
 
 class Klines:
     def __init__(self, global_config, currency_config, db):

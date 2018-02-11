@@ -29,9 +29,9 @@ except IOError:
 
 db = DB(global_config)
 
-# data_fetcher = DataFetcher(global_config, currency_config, db)
+data_fetcher = DataFetcher(global_config, currency_config, db)
 data_distributor = DataDistributor(global_config, currency_config, db)
-price_predictor = PricePredictor(global_config, currency_config, db, data_distributor)
+# price_predictor = PricePredictor(global_config, currency_config, db, data_distributor)
 # stock_manager = StockManager(global_config, currency_config, db)
 # decision_maker = DecisionMaker(global_config, currency_config, db, stock_manager)
 

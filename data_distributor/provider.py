@@ -25,7 +25,6 @@ class Provider:
             input = input / np.max(input)
             batch[i] = input
 
-        print(batch)
         return batch
 
     def get_price(self, code):

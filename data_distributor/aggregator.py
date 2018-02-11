@@ -49,7 +49,7 @@ class Aggregator:
             slopes = []
             for currency in currency_data.keys():
                 slope = stats.linregress(lin_regression_x, currency_data[currency][i:i + network_input])
-                slopes.append(slope)
+                slopes.append(100 * slope.slope)
 
             general_trend = np.average(slopes)
 
@@ -79,28 +79,23 @@ class Aggregator:
         network_input = self.global_config["neural_network"]["input"]
         network_output = self.global_config["neural_network"]["output"]
         currency_data = {}
-        result = np.empty((0, 50, network_input+ network_output))
-        lin_regression_x = np.arange(60)
+        result = np.empty((0, 1441))
+        lin_regression_x = np.arange(10)
 
         print("saving data")
         shortest_data_count = 0
         for currency in self.currency_config.keys():
-            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING).limit(3 * 14400))
+            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING).limit(30 * 1440))
             klines_data = [mapper(x) for x in klines_data]
-            data_points = len(klines_data) - network_input - 61
+            data_points = len(klines_data) - network_input - 11
 
-            data = np.empty((math.ceil(data_points / 50), 50, network_input + network_output))
-            batch = np.empty((50, network_input + network_output))
+            data = np.empty((data_points, 1441))
 
             for i in range(0, data_points):
-                if i % 50 == 0 and i > 0:
-                    data[math.floor(i/50)] = batch 
-
                 input = klines_data[i:i + network_input]
                 input = input / np.max(input)
-                slope = stats.linregress(lin_regression_x, klines_data[i+ network_input + 1:i + network_input + 61])
-                row = np.concatenate((input, [slope.slope]))
-                batch[i % 50] = row
+                slope = stats.linregress(lin_regression_x, klines_data[i+ network_input + 1:i + network_input + 11])
+                data[i] = np.concatenate((input, [100 * slope.slope]))
 
             result = np.vstack((result, data))
             print(currency)
