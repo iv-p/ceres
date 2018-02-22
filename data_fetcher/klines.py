@@ -4,6 +4,8 @@ import pymongo
 import time
 import threading
 import time
+from scipy import stats
+import matplotlib.pyplot as plt
 
 def mapper(t):
     return {
@@ -13,6 +15,14 @@ def mapper(t):
         "low": t[3],
         "close": t[4]
     }
+
+def chart(t):
+    return float(t["open"]) + float(t["close"]) / 2
+
+def moving_average(a, n=3) :
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    return ret[n - 1:] / n
 
 class Klines:
     def __init__(self, global_config, currency_config, db):
@@ -42,6 +52,7 @@ class Klines:
 
             r = requests.get(self.global_config["binance"]["url"] + "api/v1/klines", payload)
             data = [mapper(x) for x in r.json()]
+            
             if len(data) > 0:
                 self.db.get(currency, "klines").insert_many(data)
                 entries += len(data)

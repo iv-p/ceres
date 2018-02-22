@@ -18,84 +18,30 @@ class Aggregator:
         self.thread.daemon = True
         self.thread.start()
 
-    def tock(self):
-        np.set_printoptions(threshold=np.nan)
-        network_input = self.global_config["neural_network"]["input"]
-        network_output = self.global_config["neural_network"]["output"]
-        currency_data = {}
-
-        print("saving data")
-        shortest_data_count = 0
-        for currency in self.currency_config.keys():
-            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING)).limit(1500)
-            klines_data = [mapper(x) for x in klines_data]
-            currency_data[currency] = klines_data
-            if len(klines_data) < shortest_data_count or shortest_data_count == 0:
-                shortest_data_count = len(klines_data)
-        
-        lin_regression_x = np.arange(network_input)
-        data_per_currency = shortest_data_count - network_input - 61
-        num_of_currencies = len(self.currency_config.keys())
-        data = np.empty((data_per_currency * num_of_currencies , network_input + network_output + 1))
-
-        batches = data_per_currency / network_input
-
-        for currency in self.currency_data.keys():
-            currency_data[currency] = currency_data[currency][:-data_per_currency]
-
-        j = 0
-        for i in range(0, data_per_currency):
-            # calculate the global trend
-            slopes = []
-            for currency in currency_data.keys():
-                slope = stats.linregress(lin_regression_x, currency_data[currency][i:i + network_input])
-                slopes.append(100 * slope.slope)
-
-            general_trend = np.average(slopes)
-
-            for currency in currency_data.keys():
-                input_data = currency_data[currency][i:i + network_input + 61]
-
-                label_data = input_data[network_input + 1]
-                label_data = np.append(label_data, input_data[network_input + 60])
-
-                # normalize the data
-                max_value = np.max(input_data[:network_input])
-                input_data = input_data[:network_input] / max_value
-                label_data = label_data / max_value
-                input_data = np.append(input_data, general_trend)
-
-                result = np.append(input_data, label_data)
-                data[j] = result
-                j+=1
-
-        data = data[:j]
-
-        np.save(self.global_config["neural_network"]["training_file"], data)
-        print(str(data.shape) + " sets of data saved")
-
     def tick(self):
         np.set_printoptions(threshold=np.nan)
-        network_input = self.global_config["neural_network"]["input"]
+        data_len = self.global_config["neural_network"]["input"]
         network_output = self.global_config["neural_network"]["output"]
         currency_data = {}
-        result = np.empty((0, 1441))
-        lin_regression_x = np.arange(10)
+        pred_len = 10
+        result = np.empty((0, data_len + 1))
+        lin_regression_x = np.arange(pred_len)
 
         print("saving data")
         shortest_data_count = 0
         for currency in self.currency_config.keys():
-            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING).limit(30 * 1440))
+            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING).limit(2000))
             klines_data = [mapper(x) for x in klines_data]
-            data_points = len(klines_data) - network_input - 11
+            data_points = len(klines_data) - data_len - pred_len - 1
 
-            data = np.empty((data_points, 1441))
+            data = np.empty((data_points, data_len + 1))
 
             for i in range(0, data_points):
-                input = klines_data[i:i + network_input]
+                input = klines_data[i:i + data_len]
                 input = input / np.max(input)
-                slope = stats.linregress(lin_regression_x, klines_data[i+ network_input + 1:i + network_input + 11])
-                data[i] = np.concatenate((input, [100 * slope.slope]))
+                slope = stats.linregress(lin_regression_x, klines_data[i+ data_len + 1:i + data_len + pred_len + 1])
+                diff = np.sum(np.arange(pred_len) * slope.slope) / klines_data[i+ data_len + 1]
+                data[i] = np.concatenate((input, [100 * diff]))
 
             result = np.vstack((result, data))
             print(currency)
