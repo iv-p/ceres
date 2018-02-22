@@ -70,27 +70,24 @@ class Network():
                         X: X_train[start:start + self.params["batch_size"]], 
                         Y: Y_train[start:start + self.params["batch_size"]]
                     })
-                    fig, ax = plt.subplots()
-                    slope = sess.run(outputs, feed_dict={
-                            X: X_test
-                        })
-                    
+                    # slope = sess.run(outputs, feed_dict={X: X_test})
+                                    
+                    # print(X_train.shape)
+                    # X_axis_data = np.arange(X_test.shape[1])
+                    # X_axis_pred = np.arange(X_test.shape[1], X_test.shape[1] + 100)
 
-                    print(X_train.shape)
-                    for j in range(X_train.shape[0]):
-                        X_plot = X_train[j]
-                        x_init = X_plot[-1]
+                    # print(X_axis_data)
+                    # print(X_axis_pred)
+                    # for j in range(X_test.shape[0]):
+                    #     X_plot = np.array([])
+                    #     x_init = X_test[j][-1]
 
-                        for i in range(10):
-                            x_init = x_init * (1 + slope[j])
-                            X_plot = np.append(X_plot, x_init)
+                    #     for i in range(100):
+                    #         x_init = x_init * (1 + slope[j])
+                    #         X_plot = np.append(X_plot, x_init)
                         
-                        ax.plot(X_plot)
-
-                        plt.show()
-                        plt.close()
-                        
-
+                    #     plt.plot(X_axis_data, X_test[j], 'r', X_axis_pred, X_plot, 'b')
+                    #     plt.show()
 
             losses = [] 
             for batch in range(0, len(Y_test) // self.params["batch_size"]):
@@ -143,22 +140,32 @@ class Network():
         # learning_rate = random.uniform(self.params["min_learning_rate"], self.params["max_learning_rate"])
         # optimizer = tf.train.AdamOptimizer(learning_rate).minimize(mse)
 
-                                                    # X = tf.placeholder(tf.float32, [None, 50, self.params["input_size"]])
-                                                    # Y = tf.placeholder(tf.float32, [None, self.params["output_size"]])
+                # X = tf.placeholder(tf.float32, [None, 50, self.params["input_size"]])
+                # Y = tf.placeholder(tf.float32, [None, self.params["output_size"]])
 
-                                                    # lstms = [tf.contrib.cudnn_rnn.CudnnCompatibleLSTMCell(layer["neurons"]) for layer in self.layers]
-                                                    # drops = [tf.contrib.rnn.DropoutWrapper(lstm, output_keep_prob=0.5) for lstm in lstms]
-                                                    # cell = tf.contrib.rnn.MultiRNNCell(drops, state_is_tuple=True)
+                # lstms = [tf.contrib.cudnn_rnn.CudnnCompatibleLSTMCell(layer["neurons"]) for layer in self.layers]
+                # drops = [tf.contrib.rnn.DropoutWrapper(lstm, output_keep_prob=0.5) for lstm in lstms]
+                # cell = tf.contrib.rnn.MultiRNNCell(drops, state_is_tuple=True)
 
-                                                    # val, _ = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)
-                                                    # val = tf.transpose(val, [1, 0, 2])
-                                                    # last = tf.gather(val, int(val.get_shape()[0]) - 1)
+                # val, _ = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)
+                # val = tf.transpose(val, [1, 0, 2])
+                # last = tf.gather(val, int(val.get_shape()[0]) - 1)
 
-                                                    # outputs = tf.layers.dense(inputs=last, units=self.params["output_size"], activation=tf.nn.relu)
-                                                    # loss = tf.reduce_mean(tf.square(outputs - Y))
-                                                    # learning_rate = random.uniform(self.params["min_learning_rate"], self.params["max_learning_rate"])
-                                                    # optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+                # outputs = tf.layers.dense(inputs=last, units=self.params["output_size"], activation=tf.nn.relu)
+                # loss = tf.reduce_mean(tf.square(outputs - Y))
+                # learning_rate = random.uniform(self.params["min_learning_rate"], self.params["max_learning_rate"])
+                # optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 
+        self.layers = [
+            {
+                "neurons": 200,
+                "dropout": 0.5
+            },
+            {
+                "neurons": 50,
+                "dropout": 0.5
+            }
+        ]
 
         X = tf.placeholder(tf.float32, [None, self.params["input_size"]])
         Y = tf.placeholder(tf.float32, [None, self.params["output_size"]])

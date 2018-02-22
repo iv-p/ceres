@@ -34,7 +34,7 @@ class Klines:
             payload = {
                 "symbol": self.currency_config[currency]["symbol"],
                 "interval": self.global_config["binance"]["interval"],
-                "startTime": 1514764800
+                "startTime": 1517443200
             }
 
             if latest_kline.count() > 0:

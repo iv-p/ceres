@@ -31,7 +31,7 @@ url:
   price-predictor: http://price-predictor:5000
   stock-manager: http://stock-manager:5000
 data-fetcher:
-  klines: 30
+  klines: 1
 data-distributor:
   interval: 600
 price-predictor:
