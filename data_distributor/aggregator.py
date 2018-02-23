@@ -40,8 +40,8 @@ class Aggregator:
                 input = klines_data[i:i + data_len]
                 input = input / np.max(input)
                 slope = stats.linregress(lin_regression_x, klines_data[i+ data_len + 1:i + data_len + pred_len + 1])
-                diff = np.sum(np.arange(pred_len) * slope.slope) / klines_data[i+ data_len + 1]
-                data[i] = np.concatenate((input, [100 * diff]))
+                diff = 1 + np.sum(np.arange(pred_len) * slope.slope) / klines_data[i+ data_len + 1]
+                data[i] = np.concatenate((input, [diff]))
 
             result = np.vstack((result, data))
             print(currency)

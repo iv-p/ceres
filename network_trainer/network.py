@@ -7,6 +7,8 @@ import zipfile
 import tensorflow as tf
 import pickle
 import sys
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 def zipdir(path, ziph):
@@ -70,24 +72,6 @@ class Network():
                         X: X_train[start:start + self.params["batch_size"]], 
                         Y: Y_train[start:start + self.params["batch_size"]]
                     })
-                    # slope = sess.run(outputs, feed_dict={X: X_test})
-                                    
-                    # print(X_train.shape)
-                    # X_axis_data = np.arange(X_test.shape[1])
-                    # X_axis_pred = np.arange(X_test.shape[1], X_test.shape[1] + 100)
-
-                    # print(X_axis_data)
-                    # print(X_axis_pred)
-                    # for j in range(X_test.shape[0]):
-                    #     X_plot = np.array([])
-                    #     x_init = X_test[j][-1]
-
-                    #     for i in range(100):
-                    #         x_init = x_init * (1 + slope[j])
-                    #         X_plot = np.append(X_plot, x_init)
-                        
-                    #     plt.plot(X_axis_data, X_test[j], 'r', X_axis_pred, X_plot, 'b')
-                    #     plt.show()
 
             losses = [] 
             for batch in range(0, len(Y_test) // self.params["batch_size"]):
@@ -99,6 +83,23 @@ class Network():
                 losses.append(current_loss)
             self.loss = np.average(losses)
             print(self.loss)
+            test_point = random.randint(X_test.shape[0])
+
+            diff = sess.run(outputs, feed_dict={X: X_test[test_point:test_point + 1]})        
+            print(diff[0,0])
+            X_axis_data = np.arange(X_test.shape[1])
+            X_axis_pred = np.arange(X_test.shape[1], X_test.shape[1] + 10)
+
+            X_plot = np.array([])
+            x_init = X_test[test_point][-1]
+
+            for i in range(10):
+                x_init *= diff[0,0]
+                X_plot = np.append(X_plot, x_init)
+            
+            plt.close()
+            plt.plot(X_axis_data, X_test[test_point], 'r', X_axis_pred, X_plot, 'b')
+            plt.show(block=False)
 
             if self.loss < best_fitness:
                 print(str(self.loss) + " saving model.")
@@ -156,16 +157,16 @@ class Network():
                 # learning_rate = random.uniform(self.params["min_learning_rate"], self.params["max_learning_rate"])
                 # optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 
-        self.layers = [
-            {
-                "neurons": 200,
-                "dropout": 0.5
-            },
-            {
-                "neurons": 50,
-                "dropout": 0.5
-            }
-        ]
+        # self.layers = [
+        #     {
+        #         "neurons": 500,
+        #         "dropout": 0.5
+        #     },
+        #     {
+        #         "neurons": 100,
+        #         "dropout": 0.5
+        #     }
+        # ]
 
         X = tf.placeholder(tf.float32, [None, self.params["input_size"]])
         Y = tf.placeholder(tf.float32, [None, self.params["output_size"]])
@@ -187,25 +188,25 @@ class Network():
             units=self.params["output_size"], 
             activation=tf.nn.sigmoid)
     
-                        # stacked_rnn_output = tf.reshape(logits, [-1, self.layers[-1]["neurons"]])
-                        # stacked_outputs = tf.layers.dense(stacked_rnn_output, self.params["output_size"])
-                        # out = tf.reshape(stacked_outputs, [-1, 50, self.params["output_size"]])
+                # stacked_rnn_output = tf.reshape(logits, [-1, self.layers[-1]["neurons"]])
+                # stacked_outputs = tf.layers.dense(stacked_rnn_output, self.params["output_size"])
+                # out = tf.reshape(stacked_outputs, [-1, 50, self.params["output_size"]])
 
-                        # onehot_labels = tf.one_hot(
-                        #     indices=tf.cast(Y, dtype=tf.int64),
-                        #     depth=self.params["output"],
-                        #     dtype=tf.int64)
-                        # loss = tf.losses.softmax_cross_entropy(
-                        #     onehot_labels=onehot_labels, logits=logits)
+                # onehot_labels = tf.one_hot(
+                #     indices=tf.cast(Y, dtype=tf.int64),
+                #     depth=self.params["output"],
+                #     dtype=tf.int64)
+                # loss = tf.losses.softmax_cross_entropy(
+                #     onehot_labels=onehot_labels, logits=logits)
 
-                        # argmax_outputs = tf.argmax(input=logits, axis=1)
-                        # accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.cast(Y, dtype=tf.int64), argmax_outputs), tf.float32))
+                # argmax_outputs = tf.argmax(input=logits, axis=1)
+                # accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.cast(Y, dtype=tf.int64), argmax_outputs), tf.float32))
 
-                        # out = tf.layers.dense(inputs=layer_objects[-1], units=self.params["output_size"], activation=tf.nn.relu)
+                # out = tf.layers.dense(inputs=layer_objects[-1], units=self.params["output_size"], activation=tf.nn.relu)
 
         mse = tf.reduce_mean(tf.squared_difference(logits, Y))
-        learning_rate = random.uniform(self.params["min_learning_rate"], self.params["max_learning_rate"])
-        optimizer = tf.train.AdamOptimizer(learning_rate).minimize(mse)
+        # learning_rate = random.uniform(self.params["min_learning_rate"], self.params["max_learning_rate"])
+        optimizer = tf.train.AdadeltaOptimizer().minimize(mse)
 
         return X, Y, optimizer, mse, logits
     
