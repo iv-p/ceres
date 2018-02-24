@@ -56,7 +56,7 @@ class Network():
     def evaluate(self, best_fitness):
         tf.reset_default_graph()
 
-        X, Y, opt, loss, outputs = self.define_model()
+        X, Y, opt, loss, outputs, accuracy, confusion = self.define_model()
 
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
@@ -73,32 +73,28 @@ class Network():
                         Y: Y_train[start:start + self.params["batch_size"]]
                     })
 
-            losses = [] 
+            con = np.zeros((self.params["output_size"], self.params["output_size"]))
+            accuracies = [] 
             for batch in range(0, len(Y_test) // self.params["batch_size"]):
                 start = batch * self.params["batch_size"]
-                current_loss = sess.run(loss, feed_dict={
+                current_accuracy = sess.run(accuracy, feed_dict={
                     X: X_test[start:start + self.params["batch_size"]], 
                     Y: Y_test[start:start + self.params["batch_size"]]
                 })
-                losses.append(current_loss)
-            self.loss = np.average(losses)
+                con += sess.run(confusion, feed_dict={
+                    X: X_test[start:start + self.params["batch_size"]], 
+                    Y: Y_test[start:start + self.params["batch_size"]]
+                })
+                accuracies.append(current_accuracy)
+            self.loss = np.average(accuracies)
+            print(con)
             print(self.loss)
             test_point = random.randint(0, X_test.shape[0])
 
             diff = sess.run(outputs, feed_dict={X: X_test[test_point:test_point + 1]})        
-            print(diff[0,0])
-            X_axis_data = np.arange(X_test.shape[1])
-            X_axis_pred = np.arange(X_test.shape[1], X_test.shape[1] + 10)
-
-            X_plot = np.array([])
-            x_init = X_test[test_point][-1]
-
-            for i in range(10):
-                x_init *= diff[0,0]
-                X_plot = np.append(X_plot, x_init)
-            
+            print(diff)
             plt.close()
-            plt.plot(X_axis_data, X_test[test_point], 'r', X_axis_pred, X_plot, 'b')
+            plt.plot(X_test[test_point])
             plt.show(block=False)
 
             if self.loss < best_fitness:
@@ -169,7 +165,7 @@ class Network():
         # ]
 
         X = tf.placeholder(tf.float32, [None, self.params["input_size"]])
-        Y = tf.placeholder(tf.float32, [None, self.params["output_size"]])
+        Y = tf.placeholder(tf.float32, [None,])
 
         layers = np.array([X])
         for layer in self.layers:
@@ -186,29 +182,26 @@ class Network():
         logits = tf.layers.dense(
             inputs=layers[-1],
             units=self.params["output_size"], 
-            activation=tf.nn.sigmoid)
+            activation=tf.nn.relu)
     
-                # stacked_rnn_output = tf.reshape(logits, [-1, self.layers[-1]["neurons"]])
-                # stacked_outputs = tf.layers.dense(stacked_rnn_output, self.params["output_size"])
-                # out = tf.reshape(stacked_outputs, [-1, 50, self.params["output_size"]])
+        # stacked_rnn_output = tf.reshape(logits, [-1, self.layers[-1]["neurons"]])
+        # stacked_outputs = tf.layers.dense(stacked_rnn_output, self.params["output_size"])
+        # out = tf.reshape(stacked_outputs, [-1, 50, self.params["output_size"]])
 
-                # onehot_labels = tf.one_hot(
-                #     indices=tf.cast(Y, dtype=tf.int64),
-                #     depth=self.params["output"],
-                #     dtype=tf.int64)
-                # loss = tf.losses.softmax_cross_entropy(
-                #     onehot_labels=onehot_labels, logits=logits)
+        onehot_labels = tf.one_hot(
+            indices=tf.cast(Y, dtype=tf.int64),
+            depth=self.params["output_size"],
+            dtype=tf.int64)
+        loss = tf.losses.softmax_cross_entropy(
+            onehot_labels=onehot_labels, logits=logits)
 
-                # argmax_outputs = tf.argmax(input=logits, axis=1)
-                # accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.cast(Y, dtype=tf.int64), argmax_outputs), tf.float32))
+        argmax_outputs = tf.argmax(input=logits, axis=1)
+        accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.cast(Y, dtype=tf.int64), argmax_outputs), tf.float32))
+        confusion = tf.confusion_matrix(labels=Y, predictions=argmax_outputs, num_classes=self.params["output_size"])
 
-                # out = tf.layers.dense(inputs=layer_objects[-1], units=self.params["output_size"], activation=tf.nn.relu)
+        optimizer = tf.train.AdadeltaOptimizer().minimize(loss)
 
-        mse = tf.reduce_mean(tf.squared_difference(logits, Y))
-        # learning_rate = random.uniform(self.params["min_learning_rate"], self.params["max_learning_rate"])
-        optimizer = tf.train.AdadeltaOptimizer().minimize(mse)
-
-        return X, Y, optimizer, mse, logits
+        return X, Y, optimizer, loss, argmax_outputs, accuracy, confusion
     
     def save_model(self, sess):
         saver = tf.train.Saver()

@@ -12,9 +12,9 @@ def load_data():
     np.random.shuffle(data)
     up_to = int(data.shape[0] * 0.9)
     X_train = np.asarray(data[:up_to,:data_len], dtype=np.float64)
-    Y_train = np.asarray(data[:up_to,data_len:], dtype=np.float64)
+    Y_train = np.asarray(data[:up_to,data_len], dtype=np.float64)
     X_test = np.asarray(data[up_to:,:data_len], dtype=np.float64)
-    Y_test = np.asarray(data[up_to:,data_len:], dtype=np.float64)
+    Y_test = np.asarray(data[up_to:,data_len], dtype=np.float64)
     print(X_train.shape)
     print(Y_train.shape)
     return X_train, Y_train, X_test, Y_test
@@ -33,7 +33,7 @@ class NetworkTrainer:
         "class": Network,
         "individual_params": {
             "input_size": data_len,
-            "output_size": 1,
+            "output_size": 3,
             "categories": 13,
             "min_layers": 2,
             "max_layers": 5,
@@ -43,6 +43,8 @@ class NetworkTrainer:
             "max_dropout": 0.3,
             "batch_size": 10,
             "total_iters": 10,
+            "min_learning_rate": 0.1,
+            "max_learning_rate": 0.3,
             "data": load_data()
         }
     }
