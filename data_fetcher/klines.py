@@ -5,7 +5,6 @@ import time
 import threading
 import time
 from scipy import stats
-import matplotlib.pyplot as plt
 
 def mapper(t):
     return {

@@ -5,8 +5,13 @@ import pymongo
 from scipy import stats
 import math
 
+import matplotlib.pyplot as plt
+
 def mapper(t):
     return float(t["high"]) + float(t["low"]) / 2
+
+def moving_average(x, N=3):
+    return np.convolve(x, np.ones((N,))/N, mode='same')
 
 class Aggregator:
     def __init__(self, global_config, currency_config, db):
@@ -27,6 +32,7 @@ class Aggregator:
         result = np.empty((0, data_len + 1))
         lin_regression_x = np.arange(pred_len)
         bands = [0.95, 0.99, 1.01, 1.05]
+        averages = [1, 3, 5, 10, 15]
         data_classes_len = np.zeros((len(bands) + 1))
 
 
@@ -38,11 +44,13 @@ class Aggregator:
             klines_data.reverse()
             data_points = len(klines_data) - data_len - pred_len - 1
 
-            data = np.empty((data_points, data_len + 1))
+            data = np.empty((data_points, len(averages), data_len + 1))
 
             for i in range(0, data_points):
+                features = np.zeros((len(averages), data_len))
                 input = klines_data[i:i + data_len]
                 input = input / np.max(input)
+
                 slope = stats.linregress(lin_regression_x, klines_data[i+ data_len + 1:i + data_len + pred_len + 1])
                 diff = 1 + np.sum(np.arange(pred_len) * slope.slope) / klines_data[i+ data_len + 1]
                 output = -1
@@ -51,8 +59,16 @@ class Aggregator:
                         output = index
                 if output == -1:
                     output = len(bands)
-                
+                    
                 data_classes_len[output] += 1
+
+                plt.close()
+                for index, average in enumerate(averages):
+                    features[index] = moving_average(input)
+                    plt.plot(features[index])
+                    plt.show()
+                
+
                 data[i] = np.concatenate((input, [output]))
 
             result = np.vstack((result, data))
