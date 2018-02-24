@@ -30,7 +30,7 @@ class Aggregator:
         print("saving data")
         shortest_data_count = 0
         for currency in self.currency_config.keys():
-            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING).limit(2000))
+            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.ASCENDING))
             klines_data = [mapper(x) for x in klines_data]
             data_points = len(klines_data) - data_len - pred_len - 1
 

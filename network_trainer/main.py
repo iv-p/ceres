@@ -37,14 +37,12 @@ class NetworkTrainer:
             "categories": 13,
             "min_layers": 2,
             "max_layers": 5,
-            "min_neurons": 20,
-            "max_neurons": 2000,
+            "min_neurons": 2,
+            "max_neurons": 120,
             "min_dropout": 0.1,
             "max_dropout": 0.3,
             "batch_size": 10,
-            "total_iters": 1,
-            "min_learning_rate": 0.1,
-            "max_learning_rate": 0.3,
+            "total_iters": 10,
             "data": load_data()
         }
     }

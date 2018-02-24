@@ -83,7 +83,7 @@ class Network():
                 losses.append(current_loss)
             self.loss = np.average(losses)
             print(self.loss)
-            test_point = random.randint(X_test.shape[0])
+            test_point = random.randint(0, X_test.shape[0])
 
             diff = sess.run(outputs, feed_dict={X: X_test[test_point:test_point + 1]})        
             print(diff[0,0])
