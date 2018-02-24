@@ -61,6 +61,7 @@ class Network():
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
             X_train, Y_train, X_test, Y_test = self.params["data"]
+            print(X_train.shape) 
             for iteration in range(self.params["total_iters"]):
                 losses = np.zeros(len(Y_train) // self.params["batch_size"])
                 # Minibatch training
@@ -122,37 +123,6 @@ class Network():
         return layers
 
     def define_model(self):
-        # keep_prob_ = tf.placeholder(tf.float32, name='keep_prob')
-
-
-        # lstms = [tf.contrib.cudnn_rnn.CudnnCompatibleLSTMCell(layer["neurons"]) for layer in self.layers]
-        # drops = [tf.contrib.rnn.DropoutWrapper(lstm, output_keep_prob=0.5) for lstm in lstms]
-        # cell = tf.contrib.rnn.MultiRNNCell(drops, state_is_tuple=True)
-
-        # state = cell.zero_state(50, tf.float32)
-        # rnn_outputs, final_state = cell(X, state)
-        
-        # outputs = tf.layers.dense(inputs=rnn_outputs, units=self.params["output_size"], activation=tf.nn.relu)
-        # mse = tf.losses.mean_squared_error(Y, outputs[-1])
-        # learning_rate = random.uniform(self.params["min_learning_rate"], self.params["max_learning_rate"])
-        # optimizer = tf.train.AdamOptimizer(learning_rate).minimize(mse)
-
-                # X = tf.placeholder(tf.float32, [None, 50, self.params["input_size"]])
-                # Y = tf.placeholder(tf.float32, [None, self.params["output_size"]])
-
-                # lstms = [tf.contrib.cudnn_rnn.CudnnCompatibleLSTMCell(layer["neurons"]) for layer in self.layers]
-                # drops = [tf.contrib.rnn.DropoutWrapper(lstm, output_keep_prob=0.5) for lstm in lstms]
-                # cell = tf.contrib.rnn.MultiRNNCell(drops, state_is_tuple=True)
-
-                # val, _ = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)
-                # val = tf.transpose(val, [1, 0, 2])
-                # last = tf.gather(val, int(val.get_shape()[0]) - 1)
-
-                # outputs = tf.layers.dense(inputs=last, units=self.params["output_size"], activation=tf.nn.relu)
-                # loss = tf.reduce_mean(tf.square(outputs - Y))
-                # learning_rate = random.uniform(self.params["min_learning_rate"], self.params["max_learning_rate"])
-                # optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
-
         # self.layers = [
         #     {
         #         "neurons": 500,
@@ -164,29 +134,36 @@ class Network():
         #     }
         # ]
 
-        X = tf.placeholder(tf.float32, [None, self.params["input_size"]])
+        X = tf.placeholder(tf.float32, [None, 5, self.params["input_size"]])
         Y = tf.placeholder(tf.float32, [None,])
 
-        layers = np.array([X])
-        for layer in self.layers:
-            dense = tf.layers.dense(
-                inputs=layers[-1], 
-                units=layer["neurons"], 
-                activation=tf.nn.sigmoid)
-            dropout = tf.layers.dropout(
-                inputs=dense, 
-                rate=layer["dropout"], 
-                training=True)
-            layers = np.append(layers, dropout)
+        x = tf.reshape(X, shape=[-1, 5, 120, 1])
+        conv1 = tf.layers.conv2d(x, 16, 5, activation=tf.nn.relu)
+        # conv2 = tf.layers.conv2d(conv1, 32, 2, activation=tf.nn.relu)
+        # conv2 = tf.layers.max_pooling2d(conv2, 2, 2)
+        # conv3 = tf.layers.conv2d(conv2, 16, 2, activation=tf.nn.relu)
+        # conv3 = tf.layers.max_pooling2d(conv3, 2, 2)
+        fc1 = tf.contrib.layers.flatten(conv1)
+        fc1 = tf.layers.dense(fc1, 100)
+        fc1 = tf.layers.dropout(fc1, rate=0.5, training=True)
+        logits = tf.layers.dense(fc1, 5, activation=tf.nn.relu)
 
-        logits = tf.layers.dense(
-            inputs=layers[-1],
-            units=self.params["output_size"], 
-            activation=tf.nn.relu)
-    
-        # stacked_rnn_output = tf.reshape(logits, [-1, self.layers[-1]["neurons"]])
-        # stacked_outputs = tf.layers.dense(stacked_rnn_output, self.params["output_size"])
-        # out = tf.reshape(stacked_outputs, [-1, 50, self.params["output_size"]])
+        # layers = np.array([X])
+        # for layer in self.layers:
+        #     dense = tf.layers.dense(
+        #         inputs=layers[-1], 
+        #         units=layer["neurons"], 
+        #         activation=tf.nn.sigmoid)
+        #     dropout = tf.layers.dropout(
+        #         inputs=dense, 
+        #         rate=layer["dropout"], 
+        #         training=True)
+        #     layers = np.append(layers, dropout)
+
+        # logits = tf.layers.dense(
+        #     inputs=layers[-1],
+        #     units=self.params["output_size"], 
+        #     activation=tf.nn.relu)
 
         onehot_labels = tf.one_hot(
             indices=tf.cast(Y, dtype=tf.int64),
