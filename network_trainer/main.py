@@ -13,11 +13,10 @@ def load_data():
     up_to = int(data.shape[0] * 0.9)
     X_train = np.asarray(data[:up_to,:,:data_len], dtype=np.float64)
     Y_train = np.asarray(data[:up_to, 0, data_len], dtype=np.float64)
-    print(data[:20, 0, 120])
     X_test = np.asarray(data[up_to:,:,:data_len], dtype=np.float64)
     Y_test = np.asarray(data[up_to:, 0, data_len], dtype=np.float64)
     print(X_train.shape)
-    print(Y_train.shape)
+    print(X_test.shape)
     return X_train, Y_train, X_test, Y_test
 
 class NetworkTrainer:
@@ -34,7 +33,7 @@ class NetworkTrainer:
         "class": Network,
         "individual_params": {
             "input_size": data_len,
-            "output_size": 5,
+            "output_size": 2,
             "categories": 13,
             "min_layers": 2,
             "max_layers": 5,

@@ -56,7 +56,7 @@ class Network():
     def evaluate(self, best_fitness):
         tf.reset_default_graph()
 
-        X, Y, opt, loss, outputs, accuracy, confusion = self.define_model()
+        X, Y, opt, loss, outputs, accuracy, confusion, training = self.define_model()
 
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
@@ -71,7 +71,8 @@ class Network():
                     # Run optimizer with batch
                     sess.run(opt, feed_dict={
                         X: X_train[start:start + self.params["batch_size"]], 
-                        Y: Y_train[start:start + self.params["batch_size"]]
+                        Y: Y_train[start:start + self.params["batch_size"]],
+                        training: True
                     })
 
             con = np.zeros((self.params["output_size"], self.params["output_size"]))
@@ -80,23 +81,18 @@ class Network():
                 start = batch * self.params["batch_size"]
                 current_accuracy = sess.run(accuracy, feed_dict={
                     X: X_test[start:start + self.params["batch_size"]], 
-                    Y: Y_test[start:start + self.params["batch_size"]]
+                    Y: Y_test[start:start + self.params["batch_size"]],
+                    training: False
                 })
                 con += sess.run(confusion, feed_dict={
                     X: X_test[start:start + self.params["batch_size"]], 
-                    Y: Y_test[start:start + self.params["batch_size"]]
+                    Y: Y_test[start:start + self.params["batch_size"]],
+                    training: False
                 })
                 accuracies.append(current_accuracy)
             self.loss = np.average(accuracies)
             print(con)
             print(self.loss)
-            test_point = random.randint(0, X_test.shape[0])
-
-            diff = sess.run(outputs, feed_dict={X: X_test[test_point:test_point + 1]})        
-            print(diff)
-            plt.close()
-            plt.plot(X_test[test_point])
-            plt.show(block=False)
 
             if self.loss < best_fitness:
                 print(str(self.loss) + " saving model.")
@@ -136,17 +132,20 @@ class Network():
 
         X = tf.placeholder(tf.float32, [None, 5, self.params["input_size"]])
         Y = tf.placeholder(tf.float32, [None,])
+        training = tf.placeholder(tf.bool)
 
-        x = tf.reshape(X, shape=[-1, 5, 120, 1])
-        conv1 = tf.layers.conv2d(x, 16, 5, activation=tf.nn.relu)
+        # x = tf.reshape(X, shape=[-1, 5, 120, 1])
+        # conv1 = tf.layers.conv2d(x, 1, 5, activation=tf.nn.relu)
         # conv2 = tf.layers.conv2d(conv1, 32, 2, activation=tf.nn.relu)
         # conv2 = tf.layers.max_pooling2d(conv2, 2, 2)
         # conv3 = tf.layers.conv2d(conv2, 16, 2, activation=tf.nn.relu)
         # conv3 = tf.layers.max_pooling2d(conv3, 2, 2)
-        fc1 = tf.contrib.layers.flatten(conv1)
-        fc1 = tf.layers.dense(fc1, 100)
-        fc1 = tf.layers.dropout(fc1, rate=0.5, training=True)
-        logits = tf.layers.dense(fc1, 5, activation=tf.nn.relu)
+        fc1 = tf.contrib.layers.flatten(X)
+        # fc1 = tf.layers.dense(fc1, 100)
+        # fc1 = tf.layers.dropout(fc1, rate=0.5, training=training)
+        fc1 = tf.layers.dense(fc1, 20)
+        fc1 = tf.layers.dropout(fc1, rate=0.5, training=training)
+        logits = tf.layers.dense(fc1, 2, activation=tf.nn.relu)
 
         # layers = np.array([X])
         # for layer in self.layers:
@@ -176,9 +175,9 @@ class Network():
         accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.cast(Y, dtype=tf.int64), argmax_outputs), tf.float32))
         confusion = tf.confusion_matrix(labels=Y, predictions=argmax_outputs, num_classes=self.params["output_size"])
 
-        optimizer = tf.train.AdadeltaOptimizer().minimize(loss)
+        optimizer = tf.train.AdadeltaOptimizer(learning_rate=0.1).minimize(loss)
 
-        return X, Y, optimizer, loss, argmax_outputs, accuracy, confusion
+        return X, Y, optimizer, loss, argmax_outputs, accuracy, confusion, training
     
     def save_model(self, sess):
         saver = tf.train.Saver()

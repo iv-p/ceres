@@ -25,16 +25,16 @@ class Aggregator:
 
     def tick(self):
         data_len = self.global_config["neural_network"]["input"]
-        currency_fetch_data_len = 2000
+        currency_fetch_data_len = 10 * 1440
         pred_len = 10
         lin_regression_x = np.arange(pred_len)
-        bands = [0.95, 0.99, 1.01, 1.05]
+        bands = [1]
         classes = len(bands) + 1
-        averages = [1, 3, 5, 10, 15]
+        averages = [1, 5, 15, 25, 35]
 
         features_per_currency = currency_fetch_data_len - data_len - pred_len - 1
         data_classes_len = np.zeros((classes), dtype=np.int)
-        classes_result = np.zeros((len(averages), len(self.currency_config.keys()) * features_per_currency, len(averages), data_len + 1))
+        classes_result = np.zeros((classes, len(self.currency_config.keys()) * features_per_currency, len(averages), data_len + 1))
 
         print("saving data")
         for currency in self.currency_config.keys():
@@ -46,6 +46,7 @@ class Aggregator:
                 features = np.zeros((len(averages), data_len + 1))
                 input = klines_data[i:i + data_len]
                 input = input / np.max(input)
+                input = input - np.average(input)
 
                 slope = stats.linregress(lin_regression_x, klines_data[i+ data_len + 1:i + data_len + pred_len + 1])
                 diff = 1 + np.sum(np.arange(pred_len) * slope.slope) / klines_data[i+ data_len + 1]
@@ -60,12 +61,15 @@ class Aggregator:
                 for index, average in enumerate(averages):
                     features[index] = np.concatenate((moving_average(input, N=average), [output]))
 
+                plt.plot(np.swapaxes(features[:,:120],0,1))
+                plt.show()
+
                 classes_result[output, data_classes_len[output]] = features
                 data_classes_len[output] += 1                
 
             print(currency)
 
-        result = np.empty((0, 5, 121))
+        result = np.empty((0, len(averages), data_len + 1))
 
         least_data = data_classes_len[0]
         for value in data_classes_len:
@@ -73,7 +77,6 @@ class Aggregator:
                 least_data = value
 
         for i in range(classes):
-            print(classes_result[i,:least_data, 0, 120])
             result = np.vstack((result, classes_result[i,:least_data]))
 
         np.save(self.global_config["neural_network"]["training_file"], result)
