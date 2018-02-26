@@ -25,63 +25,41 @@ class Aggregator:
 
     def tick(self):
         data_len = self.global_config["neural_network"]["input"]
-        currency_fetch_data_len = 10 * 1440
-        pred_len = 10
-        lin_regression_x = np.arange(pred_len)
-        bands = [1]
-        classes = len(bands) + 1
-        averages = [1, 5, 15, 25, 35]
+        features_per_currency = 1000
+        rnn_groups = 10
+        skip = 5
+        data_per_group = 60
+        currency_fetch_data_len = features_per_currency * skip + rnn_groups * data_per_group
+        pred_len = 5
+        currencies_count = len(self.currency_config.keys())
 
-        features_per_currency = currency_fetch_data_len - data_len - pred_len - 1
-        data_classes_len = np.zeros((classes), dtype=np.int)
-        classes_result = np.zeros((classes, len(self.currency_config.keys()) * features_per_currency, len(averages), data_len + 1))
+        result = np.zeros((features_per_currency * currencies_count, rnn_groups, data_per_group + pred_len))
 
         print("saving data")
-        for currency in self.currency_config.keys():
-            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(currency_fetch_data_len))
+        for currency_index, currency in enumerate(self.currency_config.keys()):
+            klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(currency_fetch_data_len + pred_len))
             klines_data = [mapper(x) for x in klines_data]
             klines_data.reverse()
-
-            for i in range(0, features_per_currency):
-                features = np.zeros((len(averages), data_len + 1))
-                input = klines_data[i:i + data_len]
-                input = input / np.max(input)
-                input = input - np.average(input)
-
-                slope = stats.linregress(lin_regression_x, klines_data[i+ data_len + 1:i + data_len + pred_len + 1])
-                diff = 1 + np.sum(np.arange(pred_len) * slope.slope) / klines_data[i+ data_len + 1]
-                output = -1
-                for index, band in enumerate(bands):
-                    if diff < band:
-                        output = index
-                        break
-                if output == -1:
-                    output = len(bands)
-
-                for index, average in enumerate(averages):
-                    features[index] = np.concatenate((moving_average(input, N=average), [output]))
-
-                plt.plot(np.swapaxes(features[:,:120],0,1))
-                plt.show()
-
-                classes_result[output, data_classes_len[output]] = features
-                data_classes_len[output] += 1                
+            for i, data_index in enumerate(range(0, currency_fetch_data_len - rnn_groups * data_per_group, skip)):
+                features = np.zeros((rnn_groups, data_per_group + pred_len))
+                for j in range(rnn_groups):
+                    fr = data_index + j * data_per_group
+                    to = fr + data_per_group
+                    input = klines_data[fr : to]
+                    min_input = np.min(input)
+                    max_input = np.max(input) - min_input
+                    input -= min_input
+                    input /= max_input
+                    pred = klines_data[to : to + pred_len]
+                    pred -= min_input
+                    pred /= max_input
+                    features[j] = np.concatenate((input, pred))
+                result[i + currency_index * features_per_currency] = features
 
             print(currency)
 
-        result = np.empty((0, len(averages), data_len + 1))
-
-        least_data = data_classes_len[0]
-        for value in data_classes_len:
-            if least_data > value:
-                least_data = value
-
-        for i in range(classes):
-            result = np.vstack((result, classes_result[i,:least_data]))
-
         np.save(self.global_config["neural_network"]["training_file"], result)
         print(str(result.shape) + " sets of data saved")
-        print(data_classes_len)
 
     def run(self):
         starttime=time.time()

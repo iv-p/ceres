@@ -1,27 +1,27 @@
-from genalg import GeneticAlgorithm
-from network import Network
+from trainer.genalg import GeneticAlgorithm
+from trainer.network import Network
 
 import numpy as np
 import math
 import yaml
 
-data_len = 120
+data_len = 60
 
 def load_data():
-    data = np.load("../bin/training_data.npy")
+    data = np.load("./bin/training_data.npy")
     np.random.shuffle(data)
     up_to = int(data.shape[0] * 0.9)
     X_train = np.asarray(data[:up_to,:,:data_len], dtype=np.float64)
-    Y_train = np.asarray(data[:up_to, 0, data_len], dtype=np.float64)
+    Y_train = np.asarray(data[:up_to, :, data_len:], dtype=np.float64)
     X_test = np.asarray(data[up_to:,:,:data_len], dtype=np.float64)
-    Y_test = np.asarray(data[up_to:, 0, data_len], dtype=np.float64)
+    Y_test = np.asarray(data[up_to:, :, data_len:], dtype=np.float64)
     print(X_train.shape)
     print(X_test.shape)
     return X_train, Y_train, X_test, Y_test
 
 class NetworkTrainer:
     global_config_file = "global"
-    config_dir = "../config/"
+    config_dir = "./config/"
     config_file_extention = ".yaml"
     params = {
         "generations": 1000,
@@ -32,20 +32,23 @@ class NetworkTrainer:
         "backup_file": "./run.bac",
         "class": Network,
         "individual_params": {
-            "input_size": data_len,
-            "output_size": 2,
-            "categories": 13,
-            "min_layers": 2,
-            "max_layers": 5,
-            "min_neurons": 2,
-            "max_neurons": 120,
-            "min_dropout": 0.1,
-            "max_dropout": 0.3,
-            "batch_size": 10,
-            "total_iters": 10,
-            "min_learning_rate": 0.1,
-            "max_learning_rate": 0.3,
-            "data": load_data()
+            "model": {
+                "input_size": data_len,
+                "output_size": 5,
+                "min_layers": 2,
+                "max_layers": 5,
+                "min_neurons": 2,
+                "max_neurons": 120,
+                "min_dropout": 0.1,
+                "max_dropout": 0.3,
+                "min_learning_rate": 0.01,
+                "max_learning_rate": 1.,
+                "cell_size": 10
+            },
+            "batch_size"    : 1,
+            "total_iters"   : 100,
+            "min_iters"      : 5,
+            "data":         load_data()
         }
     }
 
