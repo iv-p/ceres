@@ -1,0 +1,665 @@
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+Traceback (most recent call last):
+  File "./train.py", line 65, in <module>
+    ga = GeneticAlgorithm(params)
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 29, in __init__
+    self.run()
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 41, in run
+    self.evaluate()
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 61, in evaluate
+    fitness = individual.evaluate(self.best_fitness)
+  File "/home/ivelin/workspace/ceres/trainer/network.py", line 59, in evaluate
+    with tf.device():
+TypeError: device() missing 1 required positional argument: 'device_name_or_function'
+Traceback (most recent call last):
+  File "./main.py", line 40, in <module>
+    web_api = WebApi(global_config, currency_config, db, data_distributor, stock_manager)
+  File "/home/ivelin/workspace/ceres/api/web_api.py", line 16, in __init__
+    app.run(host="0.0.0.0", port=1337)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/flask/app.py", line 841, in run
+    run_simple(host, port, self, **options)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/werkzeug/serving.py", line 814, in run_simple
+    inner()
+  File "/home/ivelin/.local/lib/python3.6/site-packages/werkzeug/serving.py", line 774, in inner
+    fd=fd)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/werkzeug/serving.py", line 666, in make_server
+    passthrough_errors, ssl_context, fd=fd)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/werkzeug/serving.py", line 577, in __init__
+    self.address_family), handler)
+  File "/usr/lib/python3.6/socketserver.py", line 453, in __init__
+    self.server_bind()
+  File "/usr/lib/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib/python3.6/socketserver.py", line 467, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+Traceback (most recent call last):
+  File "./train.py", line 65, in <module>
+    ga = GeneticAlgorithm(params)
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 29, in __init__
+    self.run()
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 41, in run
+    self.evaluate()
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 61, in evaluate
+    fitness = individual.evaluate(self.best_fitness)
+  File "/home/ivelin/workspace/ceres/trainer/network.py", line 59, in evaluate
+    with tf.device():
+TypeError: device() missing 1 required positional argument: 'device_name_or_function'
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+.Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 38, in predict
+    saver = tf.train.Saver()
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/training/saver.py", line 1239, in __init__
+    self.build()
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/training/saver.py", line 1248, in build
+    self._build(self._filename, build_save=True, build_restore=True)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/training/saver.py", line 1272, in _build
+    raise ValueError("No variables to save")
+ValueError: No variables to save
+
+127.0.0.1 - - [04/Mar/2018 18:48:17] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:48:26] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:48:26] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:48:26] "GET /stocks/history HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:48:28] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:48:28] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:48:28] "GET /stocks/history HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:48:30] "GET /events HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:48:33] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:48:33] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:48:33] "GET /stocks/history HTTP/1.1" 200 -
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+.Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 38, in predict
+    pred = net.run(self.out, feed_dict={
+AttributeError: 'Network' object has no attribute 'out'
+
+127.0.0.1 - - [04/Mar/2018 18:54:03] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:54:03] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:54:03] "GET /stocks/history HTTP/1.1" 200 -
+.(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+.Traceback (most recent call last):
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1350, in _do_call
+    return fn(*args)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1329, in _run_fn
+    status, run_metadata)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/errors_impl.py", line 473, in __exit__
+    c_api.TF_GetCode(self.status.status))
+tensorflow.python.framework.errors_impl.InternalError: Blas GEMM launch failed : a.shape=(1, 69), b.shape=(69, 9), m=1, n=9, k=69
+	 [[Node: rnn/while/rnn/multi_rnn_cell/cell_0/basic_rnn_cell/MatMul = MatMul[T=DT_FLOAT, transpose_a=false, transpose_b=false, _device="/job:localhost/replica:0/task:0/device:GPU:0"](rnn/while/rnn/multi_rnn_cell/cell_0/basic_rnn_cell/concat, rnn/while/rnn/multi_rnn_cell/cell_0/basic_rnn_cell/MatMul/Enter)]]
+	 [[Node: dense_3/Tensordot/Shape/_41 = _Recv[client_terminated=false, recv_device="/job:localhost/replica:0/task:0/device:CPU:0", send_device="/job:localhost/replica:0/task:0/device:GPU:0", send_device_incarnation=1, tensor_name="edge_370_dense_3/Tensordot/Shape", tensor_type=DT_INT32, _device="/job:localhost/replica:0/task:0/device:CPU:0"]()]]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "./train.py", line 65, in <module>
+    ga = GeneticAlgorithm(params)
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 29, in __init__
+    self.run()
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 41, in run
+    self.evaluate()
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 61, in evaluate
+    fitness = individual.evaluate(self.best_fitness)
+  File "/home/ivelin/workspace/ceres/trainer/network.py", line 73, in evaluate
+    training    : True
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 895, in run
+    run_metadata_ptr)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1128, in _run
+    feed_dict_tensor, options, run_metadata)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1344, in _do_run
+    options, run_metadata)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1363, in _do_call
+    raise type(e)(node_def, op, message)
+tensorflow.python.framework.errors_impl.InternalError: Blas GEMM launch failed : a.shape=(1, 69), b.shape=(69, 9), m=1, n=9, k=69
+	 [[Node: rnn/while/rnn/multi_rnn_cell/cell_0/basic_rnn_cell/MatMul = MatMul[T=DT_FLOAT, transpose_a=false, transpose_b=false, _device="/job:localhost/replica:0/task:0/device:GPU:0"](rnn/while/rnn/multi_rnn_cell/cell_0/basic_rnn_cell/concat, rnn/while/rnn/multi_rnn_cell/cell_0/basic_rnn_cell/MatMul/Enter)]]
+	 [[Node: dense_3/Tensordot/Shape/_41 = _Recv[client_terminated=false, recv_device="/job:localhost/replica:0/task:0/device:CPU:0", send_device="/job:localhost/replica:0/task:0/device:GPU:0", send_device_incarnation=1, tensor_name="edge_370_dense_3/Tensordot/Shape", tensor_type=DT_INT32, _device="/job:localhost/replica:0/task:0/device:CPU:0"]()]]
+
+Caused by op 'rnn/while/rnn/multi_rnn_cell/cell_0/basic_rnn_cell/MatMul', defined at:
+  File "./train.py", line 65, in <module>
+    ga = GeneticAlgorithm(params)
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 29, in __init__
+    self.run()
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 41, in run
+    self.evaluate()
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 61, in evaluate
+    fitness = individual.evaluate(self.best_fitness)
+  File "/home/ivelin/workspace/ceres/trainer/network.py", line 60, in evaluate
+    (X, Y, training, opt, loss, output) = self.define_model()
+  File "/home/ivelin/workspace/ceres/trainer/network.py", line 105, in define_model
+    self.model, tensors = nn.define(self.params["model"], "/gpu:0", self.model)
+  File "/home/ivelin/workspace/ceres/common/neural_network.py", line 24, in define
+    output, _ = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 629, in dynamic_rnn
+    dtype=dtype)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 820, in _dynamic_rnn_loop
+    swap_memory=swap_memory)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2934, in while_loop
+    result = loop_context.BuildLoop(cond, body, loop_vars, shape_invariants)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2720, in BuildLoop
+    pred, body, original_loop_vars, loop_vars, shape_invariants)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2662, in _BuildLoop
+    body_result = body(*packed_vars_for_body)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2913, in <lambda>
+    body = lambda i, lv: (i + 1, orig_body(*lv))
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 795, in _time_step
+    (output, new_state) = call_cell()
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 781, in <lambda>
+    call_cell = lambda: cell(input_t, state)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 188, in __call__
+    return super(RNNCell, self).__call__(inputs, state)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/layers/base.py", line 652, in __call__
+    outputs = self.call(inputs, *args, **kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 1217, in call
+    cur_inp, new_state = cell(cur_inp, cur_state)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 292, in __call__
+    *args, **kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/layers/base.py", line 652, in __call__
+    outputs = self.call(inputs, *args, **kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 346, in call
+    array_ops.concat([inputs, state], 1), self._kernel)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 2022, in matmul
+    a, b, transpose_a=transpose_a, transpose_b=transpose_b, name=name)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/gen_math_ops.py", line 2516, in _mat_mul
+    name=name)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 787, in _apply_op_helper
+    op_def=op_def)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3160, in create_op
+    op_def=op_def)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1625, in __init__
+    self._traceback = self._graph._extract_stack()  # pylint: disable=protected-access
+
+InternalError (see above for traceback): Blas GEMM launch failed : a.shape=(1, 69), b.shape=(69, 9), m=1, n=9, k=69
+	 [[Node: rnn/while/rnn/multi_rnn_cell/cell_0/basic_rnn_cell/MatMul = MatMul[T=DT_FLOAT, transpose_a=false, transpose_b=false, _device="/job:localhost/replica:0/task:0/device:GPU:0"](rnn/while/rnn/multi_rnn_cell/cell_0/basic_rnn_cell/concat, rnn/while/rnn/multi_rnn_cell/cell_0/basic_rnn_cell/MatMul/Enter)]]
+	 [[Node: dense_3/Tensordot/Shape/_41 = _Recv[client_terminated=false, recv_device="/job:localhost/replica:0/task:0/device:CPU:0", send_device="/job:localhost/replica:0/task:0/device:GPU:0", send_device_incarnation=1, tensor_name="edge_370_dense_3/Tensordot/Shape", tensor_type=DT_INT32, _device="/job:localhost/replica:0/task:0/device:CPU:0"]()]]
+
+Traceback (most recent call last):
+  File "./main.py", line 40, in <module>
+    web_api = WebApi(global_config, currency_config, db, data_distributor, stock_manager)
+  File "/home/ivelin/workspace/ceres/api/web_api.py", line 16, in __init__
+    app.run(host="0.0.0.0", port=1337)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/flask/app.py", line 841, in run
+    run_simple(host, port, self, **options)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/werkzeug/serving.py", line 814, in run_simple
+    inner()
+  File "/home/ivelin/.local/lib/python3.6/site-packages/werkzeug/serving.py", line 774, in inner
+    fd=fd)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/werkzeug/serving.py", line 666, in make_server
+    passthrough_errors, ssl_context, fd=fd)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/werkzeug/serving.py", line 577, in __init__
+    self.address_family), handler)
+  File "/usr/lib/python3.6/socketserver.py", line 453, in __init__
+    self.server_bind()
+  File "/usr/lib/python3.6/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib/python3.6/socketserver.py", line 467, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 35, in predict
+    self.check_load()
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 60, in check_load
+    self.loss, self.out) = self.load()
+TypeError: 'bool' object is not callable
+
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+.Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 35, in predict
+    self.check_load()
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 60, in check_load
+    self.loss, self.out) = self.load()
+TypeError: 'bool' object is not callable
+
+127.0.0.1 - - [04/Mar/2018 18:55:24] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:55:24] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:55:24] "GET /stocks/history HTTP/1.1" 200 -
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+.Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 35, in predict
+    self.check_load()
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 60, in check_load
+    self.loss, self.out) = self.load()
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 68, in load
+    tf.reset_default_graph()
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 4937, in reset_default_graph
+    raise AssertionError("Do not use tf.reset_default_graph() to clear "
+AssertionError: Do not use tf.reset_default_graph() to clear nested graphs. If you need a cleared graph, exit the nesting and create a new graph.
+
+127.0.0.1 - - [04/Mar/2018 18:56:17] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:56:17] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:56:17] "GET /stocks/history HTTP/1.1" 200 -
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+.Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 38, in predict
+    self.check_load()
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 63, in check_load
+    self.loss, self.out) = self.load()
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 71, in load
+    self.lock.acquire()
+AttributeError: 'Network' object has no attribute 'lock'
+
+127.0.0.1 - - [04/Mar/2018 18:58:37] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:58:37] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:58:37] "GET /stocks/history HTTP/1.1" 200 -
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+.127.0.0.1 - - [04/Mar/2018 18:59:27] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:59:27] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:59:27] "GET /stocks/history HTTP/1.1" 200 -
+Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 38, in predict
+    self.check_load()
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 65, in check_load
+    saver.restore(net, self.local_model_dir +
+NameError: name 'net' is not defined
+
+127.0.0.1 - - [04/Mar/2018 18:59:34] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:59:34] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 18:59:34] "GET /stocks/history HTTP/1.1" 200 -
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+.127.0.0.1 - - [04/Mar/2018 19:00:09] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 19:00:09] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 19:00:09] "GET /stocks/history HTTP/1.1" 200 -
+Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 38, in predict
+    self.check_load(net)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 67, in check_load
+    os.remove(lock_file)
+FileNotFoundError: [Errno 2] No such file or directory: './model/load.lock'
+
+127.0.0.1 - - [04/Mar/2018 19:00:48] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 19:00:48] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 19:00:48] "GET /stocks/history HTTP/1.1" 200 -
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+127.0.0.1 - - [04/Mar/2018 19:01:26] "GET /worth HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 19:01:26] "GET /stocks/active HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2018 19:01:26] "GET /stocks/history HTTP/1.1" 200 -
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+.Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1350, in _do_call
+    return fn(*args)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1329, in _run_fn
+    status, run_metadata)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/errors_impl.py", line 473, in __exit__
+    c_api.TF_GetCode(self.status.status))
+tensorflow.python.framework.errors_impl.FailedPreconditionError: Attempting to use uninitialized value rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias
+	 [[Node: rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias/read = Identity[T=DT_FLOAT, _device="/job:localhost/replica:0/task:0/device:CPU:0"](rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias)]]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 42, in predict
+    self.training: False
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 895, in run
+    run_metadata_ptr)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1128, in _run
+    feed_dict_tensor, options, run_metadata)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1344, in _do_run
+    options, run_metadata)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1363, in _do_call
+    raise type(e)(node_def, op, message)
+tensorflow.python.framework.errors_impl.FailedPreconditionError: Attempting to use uninitialized value rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias
+	 [[Node: rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias/read = Identity[T=DT_FLOAT, _device="/job:localhost/replica:0/task:0/device:CPU:0"](rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias)]]
+
+Caused by op 'rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias/read', defined at:
+  File "/usr/lib/python3.6/threading.py", line 884, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 38, in predict
+    self.check_load(net)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 63, in check_load
+    self.loss, self.out) = self.load()
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 78, in load
+    return nn.define(self.params, "/cpu:0", self.model)
+  File "/home/ivelin/workspace/ceres/common/neural_network.py", line 24, in define
+    output, _ = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 629, in dynamic_rnn
+    dtype=dtype)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 820, in _dynamic_rnn_loop
+    swap_memory=swap_memory)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2934, in while_loop
+    result = loop_context.BuildLoop(cond, body, loop_vars, shape_invariants)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2720, in BuildLoop
+    pred, body, original_loop_vars, loop_vars, shape_invariants)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2662, in _BuildLoop
+    body_result = body(*packed_vars_for_body)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2913, in <lambda>
+    body = lambda i, lv: (i + 1, orig_body(*lv))
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 795, in _time_step
+    (output, new_state) = call_cell()
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 781, in <lambda>
+    call_cell = lambda: cell(input_t, state)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 188, in __call__
+    return super(RNNCell, self).__call__(inputs, state)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/layers/base.py", line 652, in __call__
+    outputs = self.call(inputs, *args, **kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 1217, in call
+    cur_inp, new_state = cell(cur_inp, cur_state)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 292, in __call__
+    *args, **kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/layers/base.py", line 636, in __call__
+    self.build(input_shapes)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 338, in build
+    initializer=init_ops.zeros_initializer(dtype=self.dtype))
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/layers/base.py", line 504, in add_variable
+    partitioner=partitioner)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variable_scope.py", line 1262, in get_variable
+    constraint=constraint)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variable_scope.py", line 1097, in get_variable
+    constraint=constraint)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variable_scope.py", line 427, in get_variable
+    return custom_getter(**custom_getter_kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 191, in _rnn_get_variable
+    variable = getter(*args, **kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variable_scope.py", line 404, in _true_getter
+    use_resource=use_resource, constraint=constraint)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variable_scope.py", line 806, in _get_single_variable
+    constraint=constraint)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variables.py", line 229, in __init__
+    constraint=constraint)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variables.py", line 373, in _init_from_args
+    self._snapshot = array_ops.identity(self._variable, name="read")
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/array_ops.py", line 127, in identity
+    return gen_array_ops.identity(input, name=name)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/gen_array_ops.py", line 2134, in identity
+    "Identity", input=input, name=name)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 787, in _apply_op_helper
+    op_def=op_def)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3160, in create_op
+    op_def=op_def)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1625, in __init__
+    self._traceback = self._graph._extract_stack()  # pylint: disable=protected-access
+
+FailedPreconditionError (see above for traceback): Attempting to use uninitialized value rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias
+	 [[Node: rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias/read = Identity[T=DT_FLOAT, _device="/job:localhost/replica:0/task:0/device:CPU:0"](rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias)]]
+
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+Traceback (most recent call last):
+  File "./train.py", line 65, in <module>
+    ga = GeneticAlgorithm(params)
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 29, in __init__
+    self.run()
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 41, in run
+    self.evaluate()
+  File "/home/ivelin/workspace/ceres/trainer/genalg.py", line 61, in evaluate
+    fitness = individual.evaluate(self.best_fitness)
+  File "/home/ivelin/workspace/ceres/trainer/network.py", line 60, in evaluate
+    (X, Y, training, opt, loss, output) = self.define_model()
+  File "/home/ivelin/workspace/ceres/trainer/network.py", line 105, in define_model
+    self.model, tensors = nn.define(self.params["model"], "/gpu:0", self.model)
+TypeError: define() takes from 1 to 2 positional arguments but 3 were given
+ * Running on http://0.0.0.0:1337/ (Press CTRL+C to quit)
+(36000, 10, 60)
+(4000, 10, 60)
+populating...
+evaluating...
+.Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1350, in _do_call
+    return fn(*args)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1329, in _run_fn
+    status, run_metadata)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/errors_impl.py", line 473, in __exit__
+    c_api.TF_GetCode(self.status.status))
+tensorflow.python.framework.errors_impl.FailedPreconditionError: Attempting to use uninitialized value rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias
+	 [[Node: rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias/read = Identity[T=DT_FLOAT, _device="/job:localhost/replica:0/task:0/device:CPU:0"](rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias)]]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 42, in predict
+    self.training: False
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 895, in run
+    run_metadata_ptr)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1128, in _run
+    feed_dict_tensor, options, run_metadata)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1344, in _do_run
+    options, run_metadata)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1363, in _do_call
+    raise type(e)(node_def, op, message)
+tensorflow.python.framework.errors_impl.FailedPreconditionError: Attempting to use uninitialized value rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias
+	 [[Node: rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias/read = Identity[T=DT_FLOAT, _device="/job:localhost/replica:0/task:0/device:CPU:0"](rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias)]]
+
+Caused by op 'rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias/read', defined at:
+  File "/usr/lib/python3.6/threading.py", line 884, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 67, in run
+    self.tick()
+  File "/home/ivelin/workspace/ceres/data_fetcher/klines.py", line 57, in tick
+    self.decision_maker.checker.check(currency)
+  File "/home/ivelin/workspace/ceres/decision_maker/checker.py", line 23, in check
+    latest = self.price_predictor.network.predict(currency)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 38, in predict
+    self.check_load(net)
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 63, in check_load
+    self.loss, self.out) = self.load()
+  File "/home/ivelin/workspace/ceres/price_predictor/network.py", line 78, in load
+    return nn.define(self.params, self.model)
+  File "/home/ivelin/workspace/ceres/common/neural_network.py", line 23, in define
+    output, _ = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 629, in dynamic_rnn
+    dtype=dtype)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 820, in _dynamic_rnn_loop
+    swap_memory=swap_memory)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2934, in while_loop
+    result = loop_context.BuildLoop(cond, body, loop_vars, shape_invariants)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2720, in BuildLoop
+    pred, body, original_loop_vars, loop_vars, shape_invariants)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2662, in _BuildLoop
+    body_result = body(*packed_vars_for_body)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py", line 2913, in <lambda>
+    body = lambda i, lv: (i + 1, orig_body(*lv))
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 795, in _time_step
+    (output, new_state) = call_cell()
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn.py", line 781, in <lambda>
+    call_cell = lambda: cell(input_t, state)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 188, in __call__
+    return super(RNNCell, self).__call__(inputs, state)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/layers/base.py", line 652, in __call__
+    outputs = self.call(inputs, *args, **kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 1217, in call
+    cur_inp, new_state = cell(cur_inp, cur_state)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 292, in __call__
+    *args, **kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/layers/base.py", line 636, in __call__
+    self.build(input_shapes)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 338, in build
+    initializer=init_ops.zeros_initializer(dtype=self.dtype))
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/layers/base.py", line 504, in add_variable
+    partitioner=partitioner)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variable_scope.py", line 1262, in get_variable
+    constraint=constraint)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variable_scope.py", line 1097, in get_variable
+    constraint=constraint)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variable_scope.py", line 427, in get_variable
+    return custom_getter(**custom_getter_kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py", line 191, in _rnn_get_variable
+    variable = getter(*args, **kwargs)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variable_scope.py", line 404, in _true_getter
+    use_resource=use_resource, constraint=constraint)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variable_scope.py", line 806, in _get_single_variable
+    constraint=constraint)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variables.py", line 229, in __init__
+    constraint=constraint)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/variables.py", line 373, in _init_from_args
+    self._snapshot = array_ops.identity(self._variable, name="read")
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/array_ops.py", line 127, in identity
+    return gen_array_ops.identity(input, name=name)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/ops/gen_array_ops.py", line 2134, in identity
+    "Identity", input=input, name=name)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 787, in _apply_op_helper
+    op_def=op_def)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3160, in create_op
+    op_def=op_def)
+  File "/home/ivelin/.local/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1625, in __init__
+    self._traceback = self._graph._extract_stack()  # pylint: disable=protected-access
+
+FailedPreconditionError (see above for traceback): Attempting to use uninitialized value rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias
+	 [[Node: rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias/read = Identity[T=DT_FLOAT, _device="/job:localhost/replica:0/task:0/device:CPU:0"](rnn/multi_rnn_cell/cell_2/basic_rnn_cell/bias)]]
+

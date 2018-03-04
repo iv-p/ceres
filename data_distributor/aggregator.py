@@ -24,7 +24,6 @@ class Aggregator:
         self.thread.start()
 
     def tick(self):
-        data_len = self.global_config["neural_network"]["input"]
         features_per_currency = 5000
         rnn_groups = 10
         skip = 5
