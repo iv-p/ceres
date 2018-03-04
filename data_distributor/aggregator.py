@@ -25,7 +25,7 @@ class Aggregator:
 
     def tick(self):
         data_len = self.global_config["neural_network"]["input"]
-        features_per_currency = 1000
+        features_per_currency = 5000
         rnn_groups = 10
         skip = 5
         data_per_group = 60
@@ -35,7 +35,6 @@ class Aggregator:
 
         result = np.zeros((features_per_currency * currencies_count, rnn_groups, data_per_group + pred_len))
 
-        print("saving data")
         for currency_index, currency in enumerate(self.currency_config.keys()):
             klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(currency_fetch_data_len + pred_len))
             klines_data = [mapper(x) for x in klines_data]
@@ -56,8 +55,6 @@ class Aggregator:
                     features[j] = np.concatenate((input, pred))
                 result[i + currency_index * features_per_currency] = features
 
-            print(currency)
-
         np.save(self.global_config["neural_network"]["training_file"], result)
         print(str(result.shape) + " sets of data saved")
 
@@ -67,10 +64,6 @@ class Aggregator:
         while True:
             self.tick()
             time.sleep(interval - ((time.time() - starttime) % interval))
-    
-    def healthcheck(self):
-        print(self.thread.is_alive())
-        return self.thread.is_alive()
 
     def get_data_volume(self, currency):
         return self.db.get(currency, "klines").find().count()

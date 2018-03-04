@@ -36,6 +36,7 @@ class Network():
             self.model = None
             self.loss = float("inf")
 
+        self.tf_config = tf.ConfigProto(allow_soft_placement = True)
 
     def crossover(self, other):
         my_point = random.randint(1, len(self.model["layers"]))
@@ -57,43 +58,44 @@ class Network():
     def evaluate(self, best_model_loss):
         tf.reset_default_graph()
 
-        with tf.Session() as model:
-            (X, Y, training, opt, loss, output) = self.define_model()
-            model.run(tf.global_variables_initializer())
-            X_train, Y_train, X_test, Y_test = self.params["data"]
-            losses = []
-            for iteration in range(self.params["total_iters"]):
-                for batch in range(0, len(Y_train) // self.params["batch_size"]):
-                    start = batch * self.params["batch_size"]
-                    # Run optimizer with batch
-                    model.run(opt, feed_dict={
-                        X           : X_train[start:start + self.params["batch_size"]], 
-                        Y           : Y_train[start:start + self.params["batch_size"]],
-                        training    : True
-                    })
+        with tf.device("/device:GPU:0"):
+            with  tf.Session(config = self.tf_config) as model:
+                (X, Y, training, opt, loss, output) = self.define_model()
+                model.run(tf.global_variables_initializer())
+                X_train, Y_train, X_test, Y_test = self.params["data"]
+                losses = []
+                for iteration in range(self.params["total_iters"]):
+                    for batch in range(0, len(Y_train) // self.params["batch_size"]):
+                        start = batch * self.params["batch_size"]
+                        # Run optimizer with batch
+                        model.run(opt, feed_dict={
+                            X           : X_train[start:start + self.params["batch_size"]], 
+                            Y           : Y_train[start:start + self.params["batch_size"]],
+                            training    : True
+                        })
 
-                iteration_losses = [] 
-                for batch in range(0, len(Y_test) // self.params["batch_size"]):
-                    start = batch * self.params["batch_size"]
-                    l = model.run(loss, feed_dict={
-                        X           : X_test[start:start + self.params["batch_size"]], 
-                        Y           : Y_test[start:start + self.params["batch_size"]],
-                        training    : False
-                    })
-                    iteration_losses.append(l)
-                losses.append(np.average(iteration_losses))
+                    iteration_losses = [] 
+                    for batch in range(0, len(Y_test) // self.params["batch_size"]):
+                        start = batch * self.params["batch_size"]
+                        l = model.run(loss, feed_dict={
+                            X           : X_test[start:start + self.params["batch_size"]], 
+                            Y           : Y_test[start:start + self.params["batch_size"]],
+                            training    : False
+                        })
+                        iteration_losses.append(l)
+                    losses.append(np.average(iteration_losses))
 
-                if iteration > self.params["min_iters"] and losses[-1] / losses[-2] > 0.99:
-                    print("stopping early with fitness {} after {}".format(losses[-1], iteration))
-                    break
-            self.loss = losses[-1]
+                    if iteration > self.params["min_iters"] and losses[-1] / losses[-2] > 0.99:
+                        print("stopping early with fitness {} after {}".format(losses[-1], iteration))
+                        break
+                self.loss = losses[-1]
 
-            if self.loss < best_model_loss:
-                print(str(self.loss) + " saving model.")
-                self.save_model(model)
+                if self.loss < best_model_loss:
+                    print(str(self.loss) + " saving model.")
+                    self.save_model(model)
 
-            print (".")
-            model.close()
+                print (".")
+                model.close()
 
         return self.loss
 
@@ -101,7 +103,7 @@ class Network():
         return np.min(self.loss)
 
     def define_model(self):
-        self.model, tensors = nn.define(self.params["model"], self.model)
+        self.model, tensors = nn.define(self.params["model"], "/gpu:0", self.model)
         return tensors
     
     def save_model(self, model):
@@ -120,6 +122,8 @@ class Network():
         zipf = zipfile.ZipFile("./bin/" + self.local_model_file, 'w', zipfile.ZIP_DEFLATED)
         zipdir(self.local_model_dir, zipf)
         zipf.close()
+
+        self.params["predictor"].network.load()
 
     def export(self):
         return {

@@ -24,18 +24,19 @@ def moving_average(a, n=3) :
     return ret[n - 1:] / n
 
 class Klines:
-    def __init__(self, global_config, currency_config, db):
+    def __init__(self, global_config, currency_config, db, decision_maker):
         self.global_config = global_config
         self.currency_config = currency_config
         self.db = db
+        self.decision_maker = decision_maker
 
         self.thread = threading.Thread(target=self.run, args=())
         self.thread.daemon = True
         self.thread.start()
 
     def tick(self):
+        entries = 0
         for currency in self.currency_config.keys():
-            entries = 0
             latest_kline = self.db.get(currency, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(1)
             self.db.get(currency, "klines").create_index(
                 [("timestamp", pymongo.DESCENDING)],
@@ -53,19 +54,18 @@ class Klines:
             data = [mapper(x) for x in r.json()]
             
             if len(data) > 0:
+                self.decision_maker.checker.check(currency)
                 self.db.get(currency, "klines").insert_many(data)
                 entries += len(data)
-            print("saved " + str(entries) + " klines for " + currency)
+        if entries > 0:
+            print("saved " + str(entries) + " klines")
 
     def run(self):
         starttime=time.time()
         interval = self.global_config["data-fetcher"]["klines"]
         while True:
-            # try:
             self.tick()
             time.sleep(interval - ((time.time() - starttime) % interval))
-            # except Exception:
-            #     pass
 
     def healthcheck(self):
         return self.thread.is_alive()

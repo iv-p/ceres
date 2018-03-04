@@ -8,6 +8,7 @@ from data_distributor.data_distributor import DataDistributor
 from price_predictor.price_predictor import PricePredictor
 from decision_maker.decision_maker import DecisionMaker
 from stock_manager.stock_manager import StockManager
+from trainer.train import NetworkTrainer
 from manager.manager import Manager
 from api.web_api import WebApi
 
@@ -29,10 +30,12 @@ except IOError:
 
 db = DB(global_config)
 
-# data_fetcher = DataFetcher(global_config, currency_config, db)
 data_distributor = DataDistributor(global_config, currency_config, db)
-# price_predictor = PricePredictor(global_config, currency_config, db, data_distributor)
-# stock_manager = StockManager(global_config, currency_config, db)
-# decision_maker = DecisionMaker(global_config, currency_config, db, stock_manager)
+price_predictor = PricePredictor(global_config, currency_config, db, data_distributor)
+stock_manager = StockManager(global_config, currency_config, db, data_distributor)
+decision_maker = DecisionMaker(global_config, currency_config, db, stock_manager, price_predictor)
+data_fetcher = DataFetcher(global_config, currency_config, db, decision_maker)
 
-web_api = WebApi(global_config, currency_config, db)
+trainer = NetworkTrainer(price_predictor)
+
+web_api = WebApi(global_config, currency_config, db, data_distributor, stock_manager)

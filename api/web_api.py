@@ -6,10 +6,10 @@ from flask import Flask
 from flask_cors import CORS, cross_origin
 
 class WebApi:
-    def __init__(self, global_config, currency_config, db):
+    def __init__(self, global_config, currency_config, db, data_distributor, stock_manager):
         app = Flask(__name__)
         CORS(app)
-        self.stocks = Stocks(global_config, currency_config, db, app)
+        self.stocks = Stocks(global_config, currency_config, db, app, data_distributor, stock_manager)
         self.events = Events(global_config, currency_config, db, app)
         self.predictions = Predictions(global_config, currency_config, db, app)
         self.price = Price(global_config, currency_config, db, app)

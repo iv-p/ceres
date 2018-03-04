@@ -1,8 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import NetWorth from './home/NetWorth';
-import TopCurrencies from './home/TopCurrencies';
 
 class Predictions extends React.Component {
   constructor(props) {
@@ -18,21 +16,9 @@ class Predictions extends React.Component {
   }
 
   getPredictions(currency) {
-    // axios.get(`http://localhost:1337/predictions/currency/${currency}`)
-    //   .then(res => {
-    //     const predictions = res.data.map(prediction => {
-    //       const pred = prediction;
-    //       pred.minute = prediction.price_predictions[0];
-    //       pred.hour = prediction.price_predictions[1];
-    //       pred.timestamp = new Date(prediction.timestamp * 1000);
-    //       return pred;
-    //     });
-    //     this.setState({ predictions });
-    //   });
     axios.get(`http://localhost:1337/price/currency/${currency}`)
       .then(res => {
         const prices = res.data;
-        console.log(prices);
         this.setState({ prices });
       });
   }
@@ -51,10 +37,6 @@ class Predictions extends React.Component {
   render() {
     return (
       <div className="container">
-        <div className="row">
-          <NetWorth />
-          <TopCurrencies />
-        </div>
         <form onSubmit={this.handleSubmit}>
           <label>
             Name:

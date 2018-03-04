@@ -36,8 +36,7 @@ class GeneticAlgorithm(object):
                 - mutates the left individuals
                 - crosses over the individuals '''
 
-        for i in range(len(self.generations), self.params["generations"]):
-            print("Generation " + str(i))
+        while True:
             self.populate()
             self.evaluate()
             self.save_progress()

@@ -6,13 +6,12 @@ class TopCurrencies extends React.Component {
     super(props);
 
     this.state = {
-      events: []
+      stocks: []
     };
 
-    axios.get('http://localhost:1337/events')
+    axios.get('http://localhost:1337/stocks/active')
       .then(res => {
-        const events = res.data;
-        this.setState({ events });
+        this.setState({ stocks: res.data.slice(0, 5) });
       });
   }
 
@@ -20,6 +19,14 @@ class TopCurrencies extends React.Component {
     const tableStyle = {
       marginBottom: '0px'
     };
+
+    let stocksList = this.state.stocks.map((stock) =>
+      <tr>
+        <td>{stock.symbol}</td>
+        <td>{Math.floor(stock.quantity * 100) / 100}</td>
+        <td>{Math.floor(stock.buy.price * 10000000) / 10000000}</td>
+      </tr>
+    );
 
     return (
       <div className="card col">
@@ -29,26 +36,7 @@ class TopCurrencies extends React.Component {
           </h4>
           <table className="table table-sm table-hover" style={tableStyle}>
             <tbody>
-              <tr>
-                <th scope="row">XLM</th>
-                <td>$123.42</td>
-                <td className="text-danger">-13.23%</td>
-              </tr>
-              <tr>
-                <th scope="row">XRP</th>
-                <td>$1223.42</td>
-                <td className="text-success">262.23%</td>
-              </tr>
-              <tr>
-                <th scope="row">XLM</th>
-                <td>$123.42</td>
-                <td className="text-danger">-13.23%</td>
-              </tr>
-              <tr>
-                <th scope="row">XLM</th>
-                <td>$123.42</td>
-                <td className="text-danger">-13.23%</td>
-              </tr>
+              {stocksList}
             </tbody>
           </table>
         </div>
