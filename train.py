@@ -8,16 +8,16 @@ import math
 import yaml
 import threading
 
-data_len = 60
+data_len = 600
 
 def load_data():
     data = np.load("./bin/training_data.npy")
     np.random.shuffle(data)
     up_to = int(data.shape[0] * 0.9)
-    X_train = np.asarray(data[:up_to,:,:data_len], dtype=np.float64)
-    Y_train = np.asarray(data[:up_to, :, data_len:], dtype=np.float64)
-    X_test = np.asarray(data[up_to:,:,:data_len], dtype=np.float64)
-    Y_test = np.asarray(data[up_to:, :, data_len:], dtype=np.float64)
+    X_train = np.asarray(data[:up_to, :data_len], dtype=np.float64)
+    Y_train = np.asarray(data[:up_to, data_len:], dtype=np.float64)
+    X_test = np.asarray(data[up_to:, :data_len], dtype=np.float64)
+    Y_test = np.asarray(data[up_to:, data_len:], dtype=np.float64)
     print(X_train.shape)
     print(X_test.shape)
     return X_train, Y_train, X_test, Y_test
@@ -35,7 +35,7 @@ params = {
     "individual_params" : {
         "model" : {
             "input_size"        : data_len,
-            "output_size"       : 5,
+            "output_size"       : 1,
             "min_layers"        : 2,
             "max_layers"        : 10,
             "min_neurons"       : 2,
@@ -43,10 +43,10 @@ params = {
             "min_dropout"       : 0.01,
             "max_dropout"       : 0.5,
             "min_learning_rate" : 0.001,
-            "max_learning_rate" : 1.,
+            "max_learning_rate" : 0.01,
             "cell_size"         : 10
         },
-        "batch_size"    : 1,
+        "batch_size"    : 10,
         "total_iters"   : 100,
         "min_iters"     : 5,
         "data"          : load_data()

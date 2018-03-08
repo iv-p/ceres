@@ -40,19 +40,14 @@ class Network():
                 self.training: False
             })
             timestamp = int(roundTime(datetime.datetime.now()).timestamp())
-            price_predictions = pred[-1][-1] * \
-                self.data_distributor.provider.get_average_price(currency)
-            x_data = np.arange(len(price_predictions))
-            slope, intercept, _, _, _ = stats.linregress(
-                x_data, price_predictions)
-            diff = (intercept + slope * 5) / intercept
+            prediction = pred[0][0]
             data = {
                 "timestamp": timestamp,
-                "prediction": diff
+                "prediction": float(prediction)
             }
             self.db.get(currency, "predictions").insert_one(data)
             net.close()
-            return diff
+            return prediction
 
     def check_load(self, net):
         lock_file = "./model/load.lock"

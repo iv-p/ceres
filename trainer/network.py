@@ -51,7 +51,7 @@ class Network():
 
     def mutate(self):
         layer = random.randint(0, len(self.model["layers"]) - 1)
-        self.model["layers"][layer]["neurons"] = random.randint(self.params["min_neurons"], self.params["max_neurons"])
+        self.model["layers"][layer]["neurons"] = random.randint(self.params["model"]["min_neurons"], self.params["model"]["max_neurons"])
 
     def evaluate(self, best_model_loss):
         tf.reset_default_graph()

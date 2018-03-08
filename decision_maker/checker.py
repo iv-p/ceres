@@ -17,13 +17,15 @@ class Checker:
         self.sell_threshold = self.global_config["decision-maker"]["thresholds"]["sell"]
 
     def check(self, currency):
+        latest = self.price_predictor.network.predict(currency)
+        print(latest)
         data = self.db.get(currency, "predictions").find().sort("timestamp", pymongo.DESCENDING).limit(3)
         if data.count() < 3:
             return
-        latest = self.price_predictor.network.predict(currency)
         data = [mapper(x) for x in data]
         data.append(latest)
-        if len(data) > 0:
+        print(data)
+        if len(data) > 3:
             verb = None
             response = None
             predicted = np.average(data)

@@ -6,22 +6,22 @@ def define(params, model=None):
     if model is None:
         model = generate(params)
     
-    X = tf.placeholder(tf.float32, [None, params["cell_size"], params["input_size"]])
-    Y = tf.placeholder(tf.float32, [None, params["cell_size"], params["output_size"]])
+    X = tf.placeholder(tf.float32, [None, params["input_size"]])
+    Y = tf.placeholder(tf.float32, [None, params["output_size"]])
     training = tf.placeholder(tf.bool)
 
     rnn_layers = []
-    tf_layers = []
+    tf_layers = [X]
 
     for layer in model["layers"]:
         if layer["type"] == "rnn":
             l = tf.contrib.rnn.BasicRNNCell(num_units=layer["neurons"], activation=tf.nn.relu)
             rnn_layers.append(l)
         elif layer["type"] == "dense":
-            if len(tf_layers) == 0:
-                cell = tf.contrib.rnn.MultiRNNCell(rnn_layers)
-                output, _ = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)
-                tf_layers.append(output)
+            # if len(tf_layers) == 0:
+            #     cell = tf.contrib.rnn.MultiRNNCell(rnn_layers)
+            #     output, _ = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)
+            #     tf_layers.append(output)
             l = tf.layers.dense(tf_layers[-1], layer["neurons"], activation=tf.nn.sigmoid)
             d = tf.layers.dropout(l, rate=layer["dropout"], training=training)
             tf_layers.append(d)
@@ -37,9 +37,10 @@ def generate(params):
     rnn_count = random.randint(1, num_layers)
     layers = []
 
-    for _ in range(rnn_count):
-        rnn = generate_rnn(params)
-        layers.append(rnn)
+    # for _ in range(rnn_count):
+    #     rnn = generate_rnn(params)
+    #     layers.append(rnn)
+    rnn_count = 0
     for _ in range(rnn_count, num_layers):
         dense = generate_dense(params)
         layers.append(dense)

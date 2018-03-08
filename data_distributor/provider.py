@@ -13,20 +13,17 @@ class Provider:
         self.currency_config = currency_config
 
     def prediction_data(self, currency):
-        result = np.empty((10, 60))
+        result = np.empty((600))
         klines_data = list(self.db.get(currency, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(600))
         klines_data = [mapper(x) for x in klines_data]
         klines_data.reverse()
 
-        for i in range(0, 10):
-            input = klines_data[i * 60 : (i + 1) * 60]
-            min_input = np.min(input)
-            max_input = np.max(input) - min_input
-            input -= min_input
-            input /= max_input
-            result[i] = input
+        min_input = np.min(klines_data)
+        max_input = np.max(klines_data) - min_input
+        klines_data -= min_input
+        klines_data /= max_input
 
-        return result
+        return klines_data
 
     def get_price(self, code):
         klines_data = list(self.db.get(code, "klines").find().sort("timestamp", pymongo.DESCENDING).limit(1))

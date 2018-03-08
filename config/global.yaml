@@ -17,7 +17,7 @@ neural_network:
   input: 120
   output: 1
   training_file: ./bin/training_data.npy
-  model_file: model.ckpt
+  model_file: model
   bump: http://localhost:8081/bump
 vm:
   hostname: 159.65.24.75
@@ -39,5 +39,5 @@ price-predictor:
 decision-maker:
   interval: 30
   thresholds: 
-    buy: 1.1
-    sell: 0.9
+    buy: 1.02
+    sell: 0.98
